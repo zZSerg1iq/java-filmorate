@@ -48,12 +48,14 @@ public class UserController {
     @PostMapping()
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         var addedUser = userStorageService.addUser(user);
+        log.info("User added: " + addedUser);
         return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
     }
 
     @PutMapping()
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         var updateResult = userStorageService.updateUser(user);
+        log.info("User updated: " + updateResult);
         return ResponseEntity.ok(updateResult);
     }
 

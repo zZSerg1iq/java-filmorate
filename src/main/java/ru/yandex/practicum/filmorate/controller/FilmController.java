@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,17 +50,17 @@ public class FilmController {
         var addedFilm = filmStorageService.addFilm(film);
 
         if (addedFilm.getId() != -1) {
-           log.info("Film added: "+film);
-           return new ResponseEntity<>(film, HttpStatus.CREATED);
+            log.info("Film added: " + addedFilm);
+            return new ResponseEntity<>(film, HttpStatus.CREATED);
         }
-        log.info("Add film conflict: "+film);
+        log.info("Add film conflict: " + film);
         return new ResponseEntity<>(film, HttpStatus.CONFLICT);
     }
 
     @PutMapping()
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
         var updateResult = filmStorageService.updateFilm(film);
-        log.info("Film updated: "+film);
+        log.info("Film updated: " + updateResult);
         return ResponseEntity.ok(updateResult);
     }
 
