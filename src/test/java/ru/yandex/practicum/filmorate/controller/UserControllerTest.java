@@ -47,7 +47,7 @@ class UserControllerTest {
     @Test
     void getUserList() {
         LocalDate date = LocalDate.of(1995, 2, 2);
-        User user = new User(0, "UserUser", "UserLogin", "Email@email.email", date );
+        User user = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
         Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, user));
 
         List<User> returned = sendGetList();
@@ -59,7 +59,7 @@ class UserControllerTest {
     void addUser() {
         // создаю и добавляю пользователя
         LocalDate date = LocalDate.of(1999, 2, 2);
-        User user = new User(0, "UserUser", "UserLogin", "Email@email.email", date );
+        User user = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
         Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, user));
 
 
@@ -82,42 +82,38 @@ class UserControllerTest {
         assertEquals("NameLogin_1", noNameUserReturned.getName());
 
 
-
-
         // пользователь, с пустым логином
         date = LocalDate.of(1981, 2, 2);
-        User wrongLoginUser = new User(0, "UserUser", null, "Email@email.email", date );
+        User wrongLoginUser = new User(0, "UserUser", null, "Email@email.email", date);
         Executable executable2_1 = () -> sendRequest(HttpMethod.POST, wrongLoginUser);
         assertThrows(HttpClientErrorException.BadRequest.class, executable2_1);
-        User wrongLoginUser2 = new User(0, "UserUser", "", "Email@email.email", date );
+        User wrongLoginUser2 = new User(0, "UserUser", "", "Email@email.email", date);
         Executable executable2_2 = () -> sendRequest(HttpMethod.POST, wrongLoginUser2);
         assertThrows(HttpClientErrorException.BadRequest.class, executable2_2);
 
 
-
-
         // некорректный емейл
         date = LocalDate.of(2099, 2, 2);
-        User wrongEmail = new User(0, "UserUser1", "UserLogin1", "Email.email", date );
+        User wrongEmail = new User(0, "UserUser1", "UserLogin1", "Email.email", date);
         Executable executable3 = () -> sendRequest(HttpMethod.POST, wrongEmail);
         assertThrows(HttpClientErrorException.BadRequest.class, executable3);
 
-        User wrongEmail2 = new User(0, "UserUser1", "UserLogin1", "Email@", date );
+        User wrongEmail2 = new User(0, "UserUser1", "UserLogin1", "Email@", date);
         Executable executable3_1 = () -> sendRequest(HttpMethod.POST, wrongEmail2);
         assertThrows(HttpClientErrorException.BadRequest.class, executable3_1);
 
-        User wrongEmail3 = new User(0, "UserUser1", "UserLogin1", "@g.r", date );
+        User wrongEmail3 = new User(0, "UserUser1", "UserLogin1", "@g.r", date);
         Executable executable3_2 = () -> sendRequest(HttpMethod.POST, wrongEmail3);
         assertThrows(HttpClientErrorException.BadRequest.class, executable3_2);
 
-        User wrongEmail4 = new User(0, "UserUser1", "UserLogin1", "", date );
+        User wrongEmail4 = new User(0, "UserUser1", "UserLogin1", "", date);
         Executable executable3_3 = () -> sendRequest(HttpMethod.POST, wrongEmail4);
         assertThrows(HttpClientErrorException.BadRequest.class, executable3_3);
 
 
         // некорректная дата рождения
         date = LocalDate.of(2025, 2, 2);
-        User incorrectBirth = new User(0, "UserUser", "UserLogin", "Email@email.email", date );
+        User incorrectBirth = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
         Executable executable4 = () -> sendRequest(HttpMethod.POST, incorrectBirth);
         assertThrows(HttpClientErrorException.BadRequest.class, executable4);
     }
@@ -126,7 +122,7 @@ class UserControllerTest {
     void updateUser() {
         // добавление пользователя для последующего изменения (в случае, если тест будет запущен первым)
         LocalDate date = LocalDate.of(2001, 7, 2);
-        User User = new User(0, "UserUser", "UserLogin", "Email@email.email", date );
+        User User = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
         Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, User));
 
         // получение списка и пользователя

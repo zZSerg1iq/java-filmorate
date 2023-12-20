@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,12 +65,9 @@ class FilmControllerTest {
         Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, film));
 
 
-
         // добавляю копию фильма
         Executable executable = () -> sendRequest(HttpMethod.POST, film);
         assertThrows(HttpClientErrorException.Conflict.class, executable);
-
-
 
 
         // фильм с null полем даты
@@ -86,15 +82,11 @@ class FilmControllerTest {
         assertThrows(HttpClientErrorException.BadRequest.class, executable2_1);
 
 
-
-
         //пустое название фильма
         date = LocalDate.of(1999, 2, 2);
         Film wrongName = new Film(0, null, "description", date, 10);
         Executable executable3 = () -> sendRequest(HttpMethod.POST, wrongName);
         assertThrows(HttpClientErrorException.BadRequest.class, executable3);
-
-
 
 
         // слишком длинное описание
@@ -110,8 +102,6 @@ class FilmControllerTest {
         Film noDescription = new Film(0, "name", description, date, 10);
         Executable executable4_1 = () -> sendRequest(HttpMethod.POST, noDescription);
         assertDoesNotThrow(executable4_1);
-
-
 
 
         // продолжительность 0 секунд

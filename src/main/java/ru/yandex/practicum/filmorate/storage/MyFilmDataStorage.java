@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 
@@ -31,8 +30,8 @@ public class MyFilmDataStorage implements FilmDataStorage {
 
     @Override
     public Film addFilm(Film film) {
-        if (films.contains(film)){
-            film.setId( -1 );
+        if (films.contains(film)) {
+            film.setId(-1);
             return film;
         }
 
@@ -44,7 +43,7 @@ public class MyFilmDataStorage implements FilmDataStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if (filmDataStorage.containsKey(film.getId())){
+        if (filmDataStorage.containsKey(film.getId())) {
             filmDataStorage.put(film.getId(), film);
         }
         return film;
@@ -53,7 +52,7 @@ public class MyFilmDataStorage implements FilmDataStorage {
     @Override
     public void deleteFilm(long id) {
         Film film = filmDataStorage.get(id);
-        if (film != null){
+        if (film != null) {
             filmDataStorage.remove(id);
             films.remove(film);
         }
