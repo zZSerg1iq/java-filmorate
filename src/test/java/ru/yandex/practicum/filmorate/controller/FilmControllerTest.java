@@ -16,7 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
-    private final String URL = "http://localhost:8080/films";
+    //Тест на гитхабе заставил переписать имя константы в нижнем регистре), потому что:
+    //Error:  /home/runner/work/java-filmorate/java-filmorate/src/test/java/ru/yandex/practicum/filmorate/controller/FilmControllerTest.java:19:26:
+    //Member name 'URL' must match pattern '^[a-z][a-zA-Z0-9]*$'. [MemberName]
+    private final String url = "http://localhost:8080/films";
 
     @Test
     void getFilm() {
@@ -29,9 +32,7 @@ class FilmControllerTest {
         assertNotNull(returned);
 
         // получаю фильм из списка
-        Film filmFromList = returned.stream()
-                .filter(film1 -> film1.getName().equals("Человек дождя"))
-                .findFirst().orElse(null);
+        Film filmFromList = returned.stream().filter(film1 -> film1.getName().equals("Человек дождя")).findFirst().orElse(null);
         assertNotNull(filmFromList);
 
         //получаю фильм по id у сервиса
@@ -78,8 +79,8 @@ class FilmControllerTest {
         // фильм с полем даты ниже минимальной границы
         date = LocalDate.of(1699, 2, 2);
         Film wrongFilmLocalDate = new Film(0, "name", "desc", date, 10);
-        Executable executable2_1 = () -> sendRequest(HttpMethod.POST, wrongFilmLocalDate);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable2_1);
+        Executable executableT = () -> sendRequest(HttpMethod.POST, wrongFilmLocalDate);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableT);
 
 
         //пустое название фильма
@@ -100,8 +101,8 @@ class FilmControllerTest {
         description = "";
         date = LocalDate.of(2006, 4, 2);
         Film noDescription = new Film(0, "name", description, date, 10);
-        Executable executable4_1 = () -> sendRequest(HttpMethod.POST, noDescription);
-        assertDoesNotThrow(executable4_1);
+        Executable executableYo = () -> sendRequest(HttpMethod.POST, noDescription);
+        assertDoesNotThrow(executableYo);
 
 
         // продолжительность 0 секунд
@@ -157,27 +158,16 @@ class FilmControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Film> entity = new HttpEntity<>(film, headers);
 
-        return new RestTemplate().exchange(
-                URL,
-                method,
-                entity,
-                Film.class
-        ).getStatusCode();
+        return new RestTemplate().exchange(url, method, entity, Film.class).getStatusCode();
     }
 
     private List<Film> sendGetList() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<Film>> response = new RestTemplate().exchange(
-                URL,
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<>() {
-                }
-        );
+        ResponseEntity<List<Film>> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {
+        });
 
         return response.getBody();
     }
@@ -185,17 +175,11 @@ class FilmControllerTest {
     private Film sendGetOne(long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        String url = URL + "/" + id;
+        String url = this.url + "/" + id;
 
-        ResponseEntity<Film> response = new RestTemplate().exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<>() {
-                }
-        );
+        ResponseEntity<Film> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {
+        });
 
         return response.getBody();
     }

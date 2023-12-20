@@ -16,7 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
 
-    private final String URL = "http://localhost:8080/users";
+    //Тест на гитхабе заставил переписать имя константы в нижнем регистре), потому что:
+    //Error:  /home/runner/work/java-filmorate/java-filmorate/src/test/java/ru/yandex/practicum/filmorate/controller/UserControllerTest.java:19:26:
+    //Member name 'URL' must match pattern '^[a-z][a-zA-Z0-9]*$'. [MemberName]
+    private final String url = "http://localhost:8080/users";
 
     @Test
     void getUser() {
@@ -85,30 +88,30 @@ class UserControllerTest {
         // пользователь, с пустым логином
         date = LocalDate.of(1981, 2, 2);
         User wrongLoginUser = new User(0, "UserUser", null, "Email@email.email", date);
-        Executable executable2_1 = () -> sendRequest(HttpMethod.POST, wrongLoginUser);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable2_1);
-        User wrongLoginUser2 = new User(0, "UserUser", "", "Email@email.email", date);
-        Executable executable2_2 = () -> sendRequest(HttpMethod.POST, wrongLoginUser2);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable2_2);
+        Executable executableT = () -> sendRequest(HttpMethod.POST, wrongLoginUser);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableT);
+        User wrongLoginUserT = new User(0, "UserUser", "", "Email@email.email", date);
+        Executable executableTt = () -> sendRequest(HttpMethod.POST, wrongLoginUserT);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableTt);
 
 
         // некорректный емейл
         date = LocalDate.of(2099, 2, 2);
         User wrongEmail = new User(0, "UserUser1", "UserLogin1", "Email.email", date);
-        Executable executable3 = () -> sendRequest(HttpMethod.POST, wrongEmail);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable3);
+        Executable executableF = () -> sendRequest(HttpMethod.POST, wrongEmail);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableF);
 
         User wrongEmail2 = new User(0, "UserUser1", "UserLogin1", "Email@", date);
-        Executable executable3_1 = () -> sendRequest(HttpMethod.POST, wrongEmail2);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable3_1);
+        Executable executableY = () -> sendRequest(HttpMethod.POST, wrongEmail2);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableY);
 
         User wrongEmail3 = new User(0, "UserUser1", "UserLogin1", "@g.r", date);
-        Executable executable3_2 = () -> sendRequest(HttpMethod.POST, wrongEmail3);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable3_2);
+        Executable executableU = () -> sendRequest(HttpMethod.POST, wrongEmail3);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableU);
 
         User wrongEmail4 = new User(0, "UserUser1", "UserLogin1", "", date);
-        Executable executable3_3 = () -> sendRequest(HttpMethod.POST, wrongEmail4);
-        assertThrows(HttpClientErrorException.BadRequest.class, executable3_3);
+        Executable executableO = () -> sendRequest(HttpMethod.POST, wrongEmail4);
+        assertThrows(HttpClientErrorException.BadRequest.class, executableO);
 
 
         // некорректная дата рождения
@@ -122,8 +125,8 @@ class UserControllerTest {
     void updateUser() {
         // добавление пользователя для последующего изменения (в случае, если тест будет запущен первым)
         LocalDate date = LocalDate.of(2001, 7, 2);
-        User User = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
-        Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, User));
+        User user = new User(0, "UserUser", "UserLogin", "Email@email.email", date);
+        Assertions.assertEquals(HttpStatus.CREATED, sendRequest(HttpMethod.POST, user));
 
         // получение списка и пользователя
         List<User> returned = sendGetList();
@@ -153,7 +156,7 @@ class UserControllerTest {
         HttpEntity<User> entity = new HttpEntity<>(User, headers);
 
         return new RestTemplate().exchange(
-                URL,
+                url,
                 method,
                 entity,
                 User.class
@@ -163,26 +166,23 @@ class UserControllerTest {
     private List<User> sendGetList() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         ResponseEntity<List<User>> response = new RestTemplate().exchange(
-                URL,
+                url,
                 HttpMethod.GET,
                 entity,
                 new ParameterizedTypeReference<>() {
                 }
         );
-
         return response.getBody();
     }
 
     private User sendGetOne(long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        String url = URL + "/" + id;
+        String url = this.url + "/" + id;
 
         ResponseEntity<User> response = new RestTemplate().exchange(
                 url,
