@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.servise;
 
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.util.List;
 
 public interface UserDataStorageService {

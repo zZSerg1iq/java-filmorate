@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.servise.UserDataStorageService;
 import ru.yandex.practicum.filmorate.storage.UserDataStorage;
-
 import java.util.List;
 
 @Service
