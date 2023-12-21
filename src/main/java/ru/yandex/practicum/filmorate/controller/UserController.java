@@ -55,7 +55,6 @@ public class UserController {
     @PutMapping()
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         var updateResult = userStorageService.updateUser(user);
-
         if (updateResult.getId() != -1) {
             log.info("User updated: " + updateResult);
             return ResponseEntity.ok(updateResult);

@@ -60,7 +60,6 @@ public class FilmController {
     @PutMapping()
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
         var updateResult = filmStorageService.updateFilm(film);
-
         if (updateResult.getId() != -1) {
             log.info("Film updated: " + updateResult);
             return ResponseEntity.ok(updateResult);
