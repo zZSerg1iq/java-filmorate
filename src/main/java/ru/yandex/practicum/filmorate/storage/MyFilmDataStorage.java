@@ -45,7 +45,9 @@ public class MyFilmDataStorage implements FilmDataStorage {
     public Film updateFilm(Film film) {
         if (filmDataStorage.containsKey(film.getId())) {
             filmDataStorage.put(film.getId(), film);
+            return film;
         }
+        film.setId(-1);
         return film;
     }
 

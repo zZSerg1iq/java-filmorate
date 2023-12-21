@@ -55,8 +55,13 @@ public class UserController {
     @PutMapping()
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         var updateResult = userStorageService.updateUser(user);
-        log.info("User updated: " + updateResult);
-        return ResponseEntity.ok(updateResult);
+
+        if (updateResult.getId() != -1) {
+            log.info("User updated: " + updateResult);
+            return ResponseEntity.ok(updateResult);
+        }
+        log.info("error update user: " + user);
+        return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")

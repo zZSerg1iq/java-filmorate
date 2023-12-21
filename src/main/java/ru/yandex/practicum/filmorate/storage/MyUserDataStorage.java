@@ -28,7 +28,7 @@ public class MyUserDataStorage implements UserDataStorage {
 
     @Override
     public User addUser(User user) {
-        if (user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         user.setId(id++);
@@ -43,7 +43,9 @@ public class MyUserDataStorage implements UserDataStorage {
                 user.setName(user.getLogin());
             }
             userDataStorage.put(user.getId(), user);
+            return user;
         }
+        user.setId(-1);
         return user;
     }
 

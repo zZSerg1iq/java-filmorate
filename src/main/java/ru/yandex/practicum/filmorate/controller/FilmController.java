@@ -60,8 +60,13 @@ public class FilmController {
     @PutMapping()
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
         var updateResult = filmStorageService.updateFilm(film);
-        log.info("Film updated: " + updateResult);
-        return ResponseEntity.ok(updateResult);
+
+        if (updateResult.getId() != -1) {
+            log.info("Film updated: " + updateResult);
+            return ResponseEntity.ok(updateResult);
+        }
+        log.info("Error update film: " + film);
+        return new ResponseEntity<>(film, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
