@@ -66,7 +66,7 @@ public class FilmController {
             return ResponseEntity.ok(updateResult);
         }
         log.info("Error update film: " + film);
-        return new ResponseEntity<>(film, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
