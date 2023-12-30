@@ -2,19 +2,27 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.MyUserDataStorage;
+import ru.yandex.practicum.filmorate.servise.UserStorageService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+@SpringBootTest
 public class UserObjectTest {
+
+    @Autowired
+    private UserStorageService userStorageService;
 
     private static Validator validator;
 
@@ -26,12 +34,11 @@ public class UserObjectTest {
 
     @Test
     public void correctUserObjectTest() {
-        MyUserDataStorage myUserDataStorage = new MyUserDataStorage();
-
         User user = new User();
         user.setName("user");
         user.setLogin("login");
         user.setEmail("mail@mymail.com");
+        user.setFriendIdList(new HashSet<>());
         user.setBirthday(LocalDate.parse("1990-10-10"));
 
         //валидный объект
@@ -42,8 +49,8 @@ public class UserObjectTest {
         user.setName(null);
         constraintViolations = validator.validate(user);
         assertEquals(0, constraintViolations.size());
-        User result = myUserDataStorage.addUser(user);
-        assertEquals(result.getName(), result.getLogin());
+        User result = userStorageService.addUser(user);
+        assertEquals(result.getLogin(), result.getName());
 
 
         //нормальный логин
@@ -126,5 +133,10 @@ public class UserObjectTest {
         assertEquals(1, constraintViolations.size());
         violationError = constraintViolations.iterator().next();
         assertEquals("Past", violationError.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName());
+    }
+
+    @Test
+    public void userFriendListTest(){
+
     }
 }

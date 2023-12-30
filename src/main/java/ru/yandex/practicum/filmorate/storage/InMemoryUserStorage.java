@@ -6,13 +6,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 @Component
-public class MyUserDataStorage implements UserDataStorage {
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> userDataStorage;
     private long id = 1;
 
 
-    public MyUserDataStorage() {
+    public InMemoryUserStorage() {
         userDataStorage = new HashMap<>();
     }
 
@@ -28,9 +28,6 @@ public class MyUserDataStorage implements UserDataStorage {
 
     @Override
     public User addUser(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
         user.setId(id++);
         userDataStorage.put(user.getId(), user);
         return user;
@@ -38,22 +35,16 @@ public class MyUserDataStorage implements UserDataStorage {
 
     @Override
     public User updateUser(User user) {
-        if (userDataStorage.containsKey(user.getId())) {
-            if (user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            userDataStorage.put(user.getId(), user);
-            return user;
-        }
-        user.setId(-1);
-        return user;
+        return userDataStorage.put(user.getId(), user);
     }
 
     @Override
-    public void deleteUser(long id) {
-        User user = userDataStorage.get(id);
-        if (user != null) {
-            userDataStorage.remove(id);
+    public void deleteUser(long userId) {
+        for (User user : userDataStorage.values()) {
+            user.deleteFriend(userId);
         }
+
+        userDataStorage.remove(id);
     }
+
 }

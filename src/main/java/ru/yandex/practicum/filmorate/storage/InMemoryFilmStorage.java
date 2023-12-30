@@ -6,21 +6,33 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.*;
 
 @Component
-public class MyFilmDataStorage implements FilmDataStorage {
+public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> filmDataStorage;
-    private final Set<Film> films;
     private long id = 1;
 
 
-    public MyFilmDataStorage() {
+    public InMemoryFilmStorage() {
         filmDataStorage = new HashMap<>();
-        films = new HashSet<>();
     }
 
     @Override
     public Optional<Film> getFilm(long filmId) {
         return Optional.ofNullable(filmDataStorage.get(filmId));
+    }
+
+    @Override
+    public Optional<Film> findFilmByData(Film film) {
+        Film result = null;
+
+        for (Film f : filmDataStorage.values()) {
+            if (f.equals(film)) {
+                result = f;
+                break;
+            }
+        }
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -30,33 +42,19 @@ public class MyFilmDataStorage implements FilmDataStorage {
 
     @Override
     public Film addFilm(Film film) {
-        if (films.contains(film)) {
-            film.setId(-1);
-            return film;
-        }
-
         film.setId(id++);
-        films.add(film);
         filmDataStorage.put(film.getId(), film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (filmDataStorage.containsKey(film.getId())) {
-            filmDataStorage.put(film.getId(), film);
-            return film;
-        }
-        film.setId(-1);
-        return film;
+        return filmDataStorage.put(film.getId(), film);
     }
 
     @Override
     public void deleteFilm(long id) {
-        Film film = filmDataStorage.get(id);
-        if (film != null) {
-            filmDataStorage.remove(id);
-            films.remove(film);
-        }
+        filmDataStorage.remove(id);
     }
+
 }

@@ -7,10 +7,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import ru.yandex.practicum.filmorate.validation.DateTimeMin;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +33,17 @@ public class Film {
 
     @Positive
     private int duration;
+
+    @NotNull
+    private Set<Long> userLikes;
+
+    public boolean addUserLike(long userId) {
+        return userLikes.add(userId);
+    }
+
+    public boolean deleteUserLike(long userId) {
+        return userLikes.remove(userId);
+    }
 
     @Override
     public boolean equals(Object o) {

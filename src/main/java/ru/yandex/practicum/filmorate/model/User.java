@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Set;
 
 
 @Data
@@ -30,4 +31,16 @@ public class User {
 
     @Past
     private LocalDate birthday;
+
+    @NotNull
+    private Set<Long> friendIdList;
+
+    public boolean addFriend(long userId) {
+        return friendIdList.add(userId);
+    }
+
+    public boolean deleteFriend(long userId) {
+        return friendIdList.remove(userId);
+    }
+
 }
