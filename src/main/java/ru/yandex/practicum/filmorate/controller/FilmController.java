@@ -1,12 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.servise.FilmDataStorageService;
+import ru.yandex.practicum.filmorate.servise.FilmStorageService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -14,51 +12,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/films")
-@Slf4j
 public class FilmController {
-    private final FilmDataStorageService filmStorageService;
+    private final FilmStorageService filmStorageService;
 
     @Autowired
-    public FilmController(FilmDataStorageService filmStorageService) {
+    public FilmController(FilmStorageService filmStorageService) {
         this.filmStorageService = filmStorageService;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Film> getFilm(@PathVariable long id) {
-        var film = filmStorageService.getFilm(id);
-        if (film.getId() != -1) {
-            return ResponseEntity.ok(film);
-        }
-        return new ResponseEntity<>(film, HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(filmStorageService.getFilm(id));
     }
 
     @GetMapping
     public ResponseEntity<List<Film>> getFilmList() {
-        var filmList = filmStorageService.getFilmList();
-        return ResponseEntity.ok(filmList);
+        return ResponseEntity.ok(filmStorageService.getFilmList());
     }
 
     @PostMapping()
     public ResponseEntity<Film> addFilm(@NotNull @Valid @RequestBody Film film) {
-        var addedFilm = filmStorageService.addFilm(film);
-
-        if (addedFilm.getId() != -1) {
-            log.info("Film added: " + addedFilm);
-            return new ResponseEntity<>(film, HttpStatus.CREATED);
-        }
-        log.info("Add film conflict: " + film);
-        return new ResponseEntity<>(film, HttpStatus.CONFLICT);
+        return ResponseEntity.ok(filmStorageService.addFilm(film));
     }
 
     @PutMapping()
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
-        var updateResult = filmStorageService.updateFilm(film);
-        if (updateResult.getId() != -1) {
-            log.info("Film updated: " + updateResult);
-            return ResponseEntity.ok(updateResult);
-        }
-        log.info("Error update film: " + film);
-        return new ResponseEntity<>(film, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.ok(filmStorageService.updateFilm(film));
     }
 
     @DeleteMapping("/{id}")
@@ -66,4 +45,32 @@ public class FilmController {
         filmStorageService.deleteFilm(id);
     }
 
+    @GetMapping("/popular")
+    public ResponseEntity<List<Film>> getTopRateList(
+            @RequestParam(value = "count", required = false) String count) {
+        final int defaultValue = 10;
+
+        if (count != null && !count.isBlank()) {
+            int filmCount = Integer.parseInt(count);
+            return ResponseEntity.ok(filmStorageService.getTopRate(filmCount));
+        } else {
+            return ResponseEntity.ok(filmStorageService.getTopRate(defaultValue));
+        }
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public ResponseEntity<Film> addUserLike(
+            @PathVariable("id") long filmId,
+            @PathVariable long userId) {
+
+        return ResponseEntity.ok(filmStorageService.addUserLike(filmId, userId));
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public ResponseEntity<Film> deleteUserLike(
+            @PathVariable("id") long filmId,
+            @PathVariable long userId) {
+
+        return ResponseEntity.ok(filmStorageService.deleteUserLike(filmId, userId));
+    }
 }

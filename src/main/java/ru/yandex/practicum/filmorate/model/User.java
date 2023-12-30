@@ -1,19 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     private long id = -1;
@@ -30,4 +28,30 @@ public class User {
 
     @Past
     private LocalDate birthday;
+
+    private Set<Long> friendIdList;
+
+    public boolean addFriend(long userId) {
+        return friendIdList.add(userId);
+    }
+
+    public boolean deleteFriend(long userId) {
+        return friendIdList.remove(userId);
+    }
+
+    public User(long id, String name, String login, String email, LocalDate birthday, Set<Long> friendIdList) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.birthday = birthday;
+        this.friendIdList = friendIdList;
+        if (friendIdList == null) {
+            this.friendIdList = new HashSet<>();
+        }
+    }
+
+    public User() {
+        this.friendIdList = new HashSet<>();
+    }
 }

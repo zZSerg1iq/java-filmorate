@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDataStorage {
+public interface UserStorage {
 
     Optional<User> getUser(long userId);
 
@@ -15,5 +15,6 @@ public interface UserDataStorage {
 
     User updateUser(User user);
 
-    void deleteUser(long id);
+    void deleteUser(long userId);
+
 }
