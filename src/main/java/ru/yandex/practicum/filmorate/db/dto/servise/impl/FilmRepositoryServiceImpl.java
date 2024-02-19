@@ -1,22 +1,20 @@
-package ru.yandex.practicum.filmorate.servise.impl;
+package ru.yandex.practicum.filmorate.db.dto.servise.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
-import ru.yandex.practicum.filmorate.mapping.FilmMapper;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.servise.FilmRepositoryService;
-import ru.yandex.practicum.filmorate.servise.UserRepositoryService;
-import ru.yandex.practicum.filmorate.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.db.mapping.FilmMapper;
+import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
+import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
+import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,8 +49,8 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         FilmMapper filmMapper = new FilmMapper();
 
         Film film = new FilmMapper().dtoToEntity(filmDto);
-        Optional<Film> filmOpt = filmRepository.findFilmByData(film);
-        if (filmOpt.isPresent()) {
+        List<Film> result = filmRepository.findFilmByData(film);
+        if (result.size() > 0) {
             throw new DataConflictException("Добавляемый фильм уже находится в базе");
         }
 

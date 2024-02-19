@@ -1,21 +1,21 @@
-DROP TABLE IF EXISTS "Users";
-DROP TABLE IF EXISTS "Films";
-DROP TABLE IF EXISTS "FriendList";
-DROP TABLE IF EXISTS "UserLikes";
+DROP TABLE IF EXISTS _users cascade ;
+DROP TABLE IF EXISTS films cascade ;
+DROP TABLE IF EXISTS friend_list cascade ;
+DROP TABLE IF EXISTS user_likes cascade ;
 
 -- Создание таблицы User
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS _users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
+    _name VARCHAR(50) NOT NULL,
     login VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     birthday Date
     );
 
 -- Создание таблицы Film
-CREATE TABLE IF NOT EXISTS Films (
+CREATE TABLE IF NOT EXISTS films (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    filmname VARCHAR(50),
+    _name VARCHAR(50),
     description VARCHAR(200),
     release_date DATE,
     duration INT,
@@ -24,20 +24,20 @@ CREATE TABLE IF NOT EXISTS Films (
 );
 
 -- Создание таблицы FriendList
-CREATE TABLE IF NOT EXISTS FriendList (
+CREATE TABLE IF NOT EXISTS friend_list (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     friend_id INT,
-    friend_request_status VARCHAR(20),
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (friend_id) REFERENCES Users(id)
+    friend_request_status int,
+    FOREIGN KEY (user_id) REFERENCES _users(id),
+    FOREIGN KEY (friend_id) REFERENCES _users(id)
 );
 
 -- Создание таблицы UserLikes
-CREATE TABLE IF NOT EXISTS UserLikes (
+CREATE TABLE IF NOT EXISTS user_likes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     film_id INT,
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (film_id) REFERENCES Films(id)
+    FOREIGN KEY (user_id) REFERENCES _users(id),
+    FOREIGN KEY (film_id) REFERENCES films(id)
 );

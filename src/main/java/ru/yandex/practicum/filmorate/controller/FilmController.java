@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.servise.FilmRepositoryService;
+import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

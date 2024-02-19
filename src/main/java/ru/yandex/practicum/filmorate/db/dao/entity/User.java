@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.db.dao.entity;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public class User {
 
     private String email;
 
-    private LocalDate birthday;
+    private Date birthday;
 
     private List<User> friendLists;
 

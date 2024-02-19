@@ -1,12 +1,11 @@
-package ru.yandex.practicum.filmorate.repository.impl;
+package ru.yandex.practicum.filmorate.db.dao.repository.impl;
 
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.UserRepository;
+import ru.yandex.practicum.filmorate.db.dao.entity.User;
+import ru.yandex.practicum.filmorate.db.dao.repository.UserRepository;
 
 import java.util.*;
 
-@Component
+//@Component
 public class InMemoryUserRepository implements UserRepository {
 
     private final Map<Long, User> userDataStorage;

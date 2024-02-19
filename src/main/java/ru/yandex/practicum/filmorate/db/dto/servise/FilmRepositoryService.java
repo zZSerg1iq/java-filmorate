@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorate.servise;
+package ru.yandex.practicum.filmorate.db.dto.servise;
 
-import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 
 import java.util.List;
 

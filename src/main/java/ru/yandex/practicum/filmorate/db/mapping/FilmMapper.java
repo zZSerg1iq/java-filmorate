@@ -1,9 +1,9 @@
-package ru.yandex.practicum.filmorate.mapping;
+package ru.yandex.practicum.filmorate.db.mapping;
 
-import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
+import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dao.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,9 @@ public class FilmMapper {
         film.setName(filmDto.getName());
         film.setDuration(filmDto.getDuration());
         film.setDescription(filmDto.getDescription());
+        film.setReleaseDate(filmDto.getReleaseDate());
         film.setGenre(filmDto.getGenre());
-        film.setTmaRate(filmDto.getTmaRate());
+        film.setMpaRate(filmDto.getTmaRate());
 
         return film;
     }
@@ -39,9 +40,10 @@ public class FilmMapper {
         filmDto.setName(film.getName());
         filmDto.setDuration(film.getDuration());
         filmDto.setDescription(film.getDescription());
+        filmDto.setReleaseDate(film.getReleaseDate());
         filmDto.setGenre(film.getGenre());
-        filmDto.setTmaRate(film.getTmaRate());
-        if (film.getUserLikes().size() > 0) {
+        filmDto.setTmaRate(film.getMpaRate());
+        if (film.getUserLikes() != null && film.getUserLikes().size() > 0) {
             filmDto.setUserLikes(getUserLikesList(film.getUserLikes()));
         }
         return filmDto;

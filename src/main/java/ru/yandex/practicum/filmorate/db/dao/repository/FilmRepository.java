@@ -1,7 +1,6 @@
-package ru.yandex.practicum.filmorate.repository;
+package ru.yandex.practicum.filmorate.db.dao.repository;
 
-import ru.yandex.practicum.filmorate.dto.FilmDto;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.db.dao.entity.Film;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +9,7 @@ public interface FilmRepository {
 
     Optional<Film> getFilm(long filmId);
 
-    Optional<Film> findFilmByData(Film film);
+    List<Film> findFilmByData(Film film);
 
     List<Film> getFilmList();
 

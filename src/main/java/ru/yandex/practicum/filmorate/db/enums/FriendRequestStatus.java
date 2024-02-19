@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.enums;
+package ru.yandex.practicum.filmorate.db.enums;
 
 public enum FriendRequestStatus {
     UNCONFIRMED,

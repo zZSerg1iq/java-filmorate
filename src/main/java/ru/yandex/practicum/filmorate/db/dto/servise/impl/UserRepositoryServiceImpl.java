@@ -1,21 +1,20 @@
-package ru.yandex.practicum.filmorate.servise.impl;
+package ru.yandex.practicum.filmorate.db.dto.servise.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
-import ru.yandex.practicum.filmorate.mapping.UserMapper;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.UserRepository;
-import ru.yandex.practicum.filmorate.servise.UserRepositoryService;
+import ru.yandex.practicum.filmorate.db.mapping.UserMapper;
+import ru.yandex.practicum.filmorate.db.dao.entity.User;
+import ru.yandex.practicum.filmorate.db.dao.repository.UserRepository;
+import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j

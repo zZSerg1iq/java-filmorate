@@ -1,9 +1,9 @@
-package ru.yandex.practicum.filmorate.dto;
+package ru.yandex.practicum.filmorate.db.dto.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.yandex.practicum.filmorate.enums.MotionPictureAssociationRate;
+import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 import ru.yandex.practicum.filmorate.validation.DateTimeMin;
 
 import javax.validation.constraints.NotBlank;
@@ -26,7 +26,7 @@ public class FilmDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @DateTimeMin(date = "1895-12-28")
-    private LocalDate releaseDate;
+    private Date releaseDate;
 
     @Positive
     private int duration;

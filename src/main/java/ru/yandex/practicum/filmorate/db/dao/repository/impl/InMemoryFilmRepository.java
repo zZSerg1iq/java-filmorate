@@ -1,13 +1,12 @@
-package ru.yandex.practicum.filmorate.repository.impl;
+package ru.yandex.practicum.filmorate.db.dao.repository.impl;
 
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 public class InMemoryFilmRepository implements FilmRepository {
 
     private final Map<Long, Film> filmDataStorage;
@@ -32,17 +31,17 @@ public class InMemoryFilmRepository implements FilmRepository {
     }
 
     @Override
-    public Optional<Film> findFilmByData(Film film) {
-        Film result = null;
+    public List<Film> findFilmByData(Film film) {
+        List<Film> films = new ArrayList<>();
 
         for (Film f : filmDataStorage.values()) {
             if (f.equals(film)) {
-                result = f;
+                films.add(f);
                 break;
             }
         }
 
-        return Optional.ofNullable(result);
+        return films;
     }
 
     @Override

@@ -1,7 +1,7 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.db.dao.entity;
 
 import lombok.*;
-import ru.yandex.practicum.filmorate.enums.FriendRequestStatus;
+import ru.yandex.practicum.filmorate.db.enums.FriendRequestStatus;
 
 import java.util.Objects;
 
