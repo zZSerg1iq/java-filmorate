@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.servise.UserStorageService;
+import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.servise.UserRepositoryService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -13,31 +13,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserStorageService userStorageService;
+    private final UserRepositoryService userStorageService;
 
     @Autowired
-    public UserController(UserStorageService userStorageService) {
+    public UserController(UserRepositoryService userStorageService) {
         this.userStorageService = userStorageService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id) {
+    public ResponseEntity<UserDto> getUser(@PathVariable long id) {
         return ResponseEntity.ok(userStorageService.getUser(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUserList() {
+    public ResponseEntity<List<UserDto>> getUserList() {
         return ResponseEntity.ok(userStorageService.getUserList());
     }
 
     @PostMapping()
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto user) {
         var addedUser = userStorageService.addUser(user);
         return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
     }
 
     @PutMapping()
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto user) {
         return ResponseEntity.ok(userStorageService.updateUser(user));
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> addFriend(
+    public ResponseEntity<UserDto> addFriend(
             @PathVariable("id") long userId,
             @PathVariable long friendId) {
 
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> deleteFriend(
+    public ResponseEntity<UserDto> deleteFriend(
             @PathVariable("id") long userId,
             @PathVariable long friendId) {
 
@@ -63,12 +63,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public ResponseEntity<List<User>> getFriendList(@PathVariable("id") long userId) {
+    public ResponseEntity<List<UserDto>> getFriendList(@PathVariable("id") long userId) {
         return ResponseEntity.ok(userStorageService.getFriendList(userId));
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public ResponseEntity<List<User>> getCommonFriendList(
+    public ResponseEntity<List<UserDto>> getCommonFriendList(
             @PathVariable("id") long userId,
             @PathVariable long otherId) {
 

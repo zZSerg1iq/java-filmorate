@@ -1,57 +1,42 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
-    private long id = -1;
+    private long id;
 
     private String name;
 
-    @NotNull
-    @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
     private String login;
 
-    @NotNull
-    @Email(message = "Email недействительный", regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
     private String email;
 
-    @Past
     private LocalDate birthday;
 
-    private Set<Long> friendIdList;
+    private List<User> friendLists;
 
-    public boolean addFriend(long userId) {
-        return friendIdList.add(userId);
+    private List<User> friendRequestList;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(name, user.name) && login.equals(user.login) && email.equals(user.email) && Objects.equals(birthday, user.birthday);
     }
 
-    public boolean deleteFriend(long userId) {
-        return friendIdList.remove(userId);
-    }
-
-    public User(long id, String name, String login, String email, LocalDate birthday, Set<Long> friendIdList) {
-        this.id = id;
-        this.name = name;
-        this.login = login;
-        this.email = email;
-        this.birthday = birthday;
-        this.friendIdList = friendIdList;
-        if (friendIdList == null) {
-            this.friendIdList = new HashSet<>();
-        }
-    }
-
-    public User() {
-        this.friendIdList = new HashSet<>();
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, login, email, birthday);
     }
 }

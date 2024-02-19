@@ -10,8 +10,8 @@ import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.servise.FilmStorageService;
-import ru.yandex.practicum.filmorate.servise.UserStorageService;
+import ru.yandex.practicum.filmorate.servise.FilmRepositoryService;
+import ru.yandex.practicum.filmorate.servise.UserRepositoryService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -28,10 +28,10 @@ import java.util.Set;
 class FilmObjectTest {
 
     @Autowired
-    private UserStorageService userStorageService;
+    private UserRepositoryService userStorageService;
 
     @Autowired
-    private FilmStorageService filmStorageService;
+    private FilmRepositoryService filmStorageService;
 
     private static Validator validator;
 

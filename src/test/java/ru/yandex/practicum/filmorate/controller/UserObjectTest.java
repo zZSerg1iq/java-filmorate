@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.servise.UserStorageService;
+import ru.yandex.practicum.filmorate.servise.UserRepositoryService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserObjectTest {
 
     @Autowired
-    private UserStorageService userStorageService;
+    private UserRepositoryService userStorageService;
 
     private static Validator validator;
 

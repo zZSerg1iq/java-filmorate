@@ -1,11 +1,12 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.repository;
 
+import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface FilmStorage {
+public interface FilmRepository {
 
     Optional<Film> getFilm(long filmId);
 
@@ -18,5 +19,11 @@ public interface FilmStorage {
     Film updateFilm(Film film);
 
     void deleteFilm(long id);
+
+   boolean addUserLike(long filmId, long userId);
+
+    boolean deleteUserLike(long filmId, long userId);
+
+    List<Film> getTopRate(int count);
 
 }
