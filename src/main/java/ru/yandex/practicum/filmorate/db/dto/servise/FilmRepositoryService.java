@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.db.dto.servise;
 
+import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 
 import java.util.List;
@@ -21,4 +23,12 @@ public interface FilmRepositoryService {
     FilmDto deleteUserLike(long filmId, long userId);
 
     List<FilmDto> getTopRate(int count);
+
+    List<GenreDto> getGenresList();
+
+    GenreDto getGenreById();
+
+    List<MpaDto> getMpaList();
+
+    MpaDto getMpaById();
 }

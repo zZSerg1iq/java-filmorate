@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface FilmRepository {
 
-    Optional<Film> getFilm(long filmId);
+    Optional<Film> getFilmById(long filmId);
 
     List<Film> findFilmByData(Film film);
 

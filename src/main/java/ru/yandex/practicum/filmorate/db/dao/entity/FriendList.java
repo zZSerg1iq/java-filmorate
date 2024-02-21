@@ -10,6 +10,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class FriendList {
 
     private long id;

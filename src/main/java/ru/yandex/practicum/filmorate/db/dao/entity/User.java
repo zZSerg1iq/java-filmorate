@@ -39,4 +39,11 @@ public class User {
     public int hashCode() {
         return Objects.hash(name, login, email, birthday);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

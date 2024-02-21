@@ -7,13 +7,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
 import ru.yandex.practicum.filmorate.db.dao.entity.User;
 import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +28,7 @@ public class H2FilmRepository implements FilmRepository {
     }
 
     private final String getFilmByIdQuery = "select * from films where id = ?";
+
     private final String getUserLikesQuery =
             "select u.id, u._name, u.login, u.birthday, u.email " +
                     "from user_likes ul " +
@@ -41,6 +41,7 @@ public class H2FilmRepository implements FilmRepository {
                     "and f.RELEASE_DATE = ?";
 
     private final String getFilmListQuery = "select * from films";
+
     private final String createFilmQuery =
             "INSERT INTO films(_name, description, release_date, duration, genre, mpa_rate) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
@@ -53,10 +54,12 @@ public class H2FilmRepository implements FilmRepository {
     private final String deleteUserLikeQuery = "delete from user_likes where user_id = ? and film_id = ?";
 
     @Override
-    public Optional<Film> getFilm(long filmId) {
+    public Optional<Film> getFilmById(long filmId) {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(getFilmByIdQuery, filmId);
         if (filmRows.next()) {
-            return Optional.of(getFilmFromRow(filmRows));
+            Film film = getFilmFromRow(filmRows);
+            System.out.println(film);
+            return Optional.of(film);
         }
         return Optional.empty();
     }
@@ -115,8 +118,8 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public void deleteFilm(long id) {
-        jdbcTemplate.queryForRowSet(deleteFilmByIdQuery, id);
-        jdbcTemplate.queryForRowSet(deleteFilmUserLikes, id);
+        jdbcTemplate.update(deleteFilmUserLikes, id);
+        jdbcTemplate.update(deleteFilmByIdQuery, id);
     }
 
     @Override
@@ -156,10 +159,11 @@ public class H2FilmRepository implements FilmRepository {
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(getFilmListQuery);
 
         List<Film> filmList = getFilmListFromRowSet(sqlRowSet);
-        filmList.sort(Comparator.comparingLong(o -> o.getUserLikes().size()));
+        filmList.sort(Comparator.comparing(film -> film.getUserLikes().size(), Comparator.reverseOrder()));
 
         return filmList.stream().limit(count).collect(Collectors.toList());
     }
+
 
     private List<Film> getFilmListFromRowSet(SqlRowSet rowSet) {
         //showQueryInfo(rowSet);
@@ -219,8 +223,8 @@ public class H2FilmRepository implements FilmRepository {
      * Метод для вывода данных о результате запроса.
      * В логике не участвует.
      * Нужен для отладки
-    */
-    private void showQueryInfo(SqlRowSet rows){
+     */
+    private void showQueryInfo(SqlRowSet rows) {
         SqlRowSetMetaData metaData = rows.getMetaData();
         int columnCount = metaData.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {

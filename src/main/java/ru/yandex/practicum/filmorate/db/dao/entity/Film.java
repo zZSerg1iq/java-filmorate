@@ -12,6 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Film {
 
     private long id;
@@ -42,4 +43,5 @@ public class Film {
     public int hashCode() {
         return Objects.hash(name, description, releaseDate, duration, genre, mpaRate);
     }
+
 }

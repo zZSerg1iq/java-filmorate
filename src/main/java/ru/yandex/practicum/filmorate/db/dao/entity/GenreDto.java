@@ -10,24 +10,21 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserLikes {
+public class GenreDto {
 
     private long id;
-
-    private User user;
-
-    private Film film;
+    private String name;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserLikes userLikes = (UserLikes) o;
-        return Objects.equals(user, userLikes.user) && Objects.equals(film, userLikes.film);
+        GenreDto genreDto = (GenreDto) o;
+        return Objects.equals(name, genreDto.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, film);
+        return Objects.hash(name);
     }
 }

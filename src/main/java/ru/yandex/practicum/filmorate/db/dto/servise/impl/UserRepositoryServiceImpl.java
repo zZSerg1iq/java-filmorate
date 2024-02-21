@@ -3,14 +3,14 @@ package ru.yandex.practicum.filmorate.db.dto.servise.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.db.dao.entity.User;
+import ru.yandex.practicum.filmorate.db.dao.repository.UserRepository;
 import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
+import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
+import ru.yandex.practicum.filmorate.db.mapping.UserMapper;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
-import ru.yandex.practicum.filmorate.db.mapping.UserMapper;
-import ru.yandex.practicum.filmorate.db.dao.entity.User;
-import ru.yandex.practicum.filmorate.db.dao.repository.UserRepository;
-import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     @Override
     public UserDto getUser(long userId) {
         Optional<User> userOpt = userRepository.getUser(userId);
+
         if (userOpt.isEmpty()) {
             throw new DataNotFoundException("Пользователя с id " + userId + " не существует");
         }

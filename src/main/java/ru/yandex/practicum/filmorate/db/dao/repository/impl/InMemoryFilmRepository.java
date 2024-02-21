@@ -26,7 +26,7 @@ public class InMemoryFilmRepository implements FilmRepository {
 
 
     @Override
-    public Optional<Film> getFilm(long filmId) {
+    public Optional<Film> getFilmById(long filmId) {
         return Optional.ofNullable(filmDataStorage.get(filmId));
     }
 

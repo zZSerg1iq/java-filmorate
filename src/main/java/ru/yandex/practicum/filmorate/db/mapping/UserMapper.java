@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.db.mapping;
 
-import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 import ru.yandex.practicum.filmorate.db.dao.entity.User;
+import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class UserMapper {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setLogin(user.getLogin());
-        userDto.setBirthday(  user.getBirthday() );
+        userDto.setBirthday(user.getBirthday());
         userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
         return userDto;

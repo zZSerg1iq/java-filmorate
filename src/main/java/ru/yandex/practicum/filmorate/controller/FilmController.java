@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 
@@ -73,4 +75,25 @@ public class FilmController {
 
         return ResponseEntity.ok(filmStorageService.deleteUserLike(filmId, userId));
     }
+
+    @GetMapping("/genres")
+    public ResponseEntity<List<GenreDto>> getGenreList(){
+        return ResponseEntity.ok(filmStorageService.getGenresList());
+    }
+
+    @GetMapping("/genres/{id}")
+    public ResponseEntity<GenreDto> getGenreById(@PathVariable("id") int id){
+        return ResponseEntity.ok(filmStorageService.getGenreById());
+    }
+
+    @GetMapping("/mpa")
+    public ResponseEntity<List<MpaDto>> getMpaList(){
+        return ResponseEntity.ok(filmStorageService.getMpaList());
+    }
+
+    @GetMapping("/mpa/{id}")
+    public ResponseEntity<MpaDto> getMpaById(@PathVariable("id") int id){
+        return ResponseEntity.ok(filmStorageService.getMpaById());
+    }
+
 }
