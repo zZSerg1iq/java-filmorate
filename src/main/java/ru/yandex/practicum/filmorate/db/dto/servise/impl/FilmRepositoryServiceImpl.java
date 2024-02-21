@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
 import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
 import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
-import ru.yandex.practicum.filmorate.db.dao.entity.UserLikes;
 import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;

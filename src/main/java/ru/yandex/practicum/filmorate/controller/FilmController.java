@@ -48,8 +48,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<FilmDto>> getTopRateList(
-            @RequestParam(value = "count", required = false) String count) {
+    public ResponseEntity<List<FilmDto>> getTopRateList(@RequestParam(value = "count", required = false) String count) {
         final int defaultValue = 10;
 
         if (count != null && !count.isBlank()) {
@@ -61,38 +60,34 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<FilmDto> addUserLike(
-            @PathVariable("id") long filmId,
-            @PathVariable long userId) {
+    public ResponseEntity<FilmDto> addUserLike(@PathVariable("id") long filmId, @PathVariable long userId) {
 
         return ResponseEntity.ok(filmStorageService.addUserLike(filmId, userId));
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public ResponseEntity<FilmDto> deleteUserLike(
-            @PathVariable("id") long filmId,
-            @PathVariable long userId) {
+    public ResponseEntity<FilmDto> deleteUserLike(@PathVariable("id") long filmId, @PathVariable long userId) {
 
         return ResponseEntity.ok(filmStorageService.deleteUserLike(filmId, userId));
     }
 
     @GetMapping("/genres")
-    public ResponseEntity<List<GenreDto>> getGenreList(){
+    public ResponseEntity<List<GenreDto>> getGenreList() {
         return ResponseEntity.ok(filmStorageService.getGenresList());
     }
 
     @GetMapping("/genres/{id}")
-    public ResponseEntity<GenreDto> getGenreById(@PathVariable("id") int id){
+    public ResponseEntity<GenreDto> getGenreById(@PathVariable("id") int id) {
         return ResponseEntity.ok(filmStorageService.getGenreById());
     }
 
     @GetMapping("/mpa")
-    public ResponseEntity<List<MpaDto>> getMpaList(){
+    public ResponseEntity<List<MpaDto>> getMpaList() {
         return ResponseEntity.ok(filmStorageService.getMpaList());
     }
 
     @GetMapping("/mpa/{id}")
-    public ResponseEntity<MpaDto> getMpaById(@PathVariable("id") int id){
+    public ResponseEntity<MpaDto> getMpaById(@PathVariable("id") int id) {
         return ResponseEntity.ok(filmStorageService.getMpaById());
     }
 
