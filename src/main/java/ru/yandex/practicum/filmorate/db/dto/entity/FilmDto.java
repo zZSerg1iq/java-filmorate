@@ -9,8 +9,8 @@ import ru.yandex.practicum.filmorate.validation.DateTimeMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class FilmDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @DateTimeMin(date = "1895-12-28")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @Positive
     private int duration;

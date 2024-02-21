@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.db.dao.entity;
 import lombok.*;
 import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public class Film {
 
     private String description;
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private int duration;
 

@@ -7,8 +7,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -29,7 +29,7 @@ public class UserDto {
     private String email;
 
     @Past
-    private Date birthday;
+    private LocalDate birthday;
 
     private List<UserDto> friendList = new ArrayList<>();
 

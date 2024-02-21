@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.db.dao.entity;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public class User {
 
     private String email;
 
-    private Date birthday;
+    private LocalDate birthday;
 
     private List<User> friendLists;
 

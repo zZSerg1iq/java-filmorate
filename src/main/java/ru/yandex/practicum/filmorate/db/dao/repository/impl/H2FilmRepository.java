@@ -88,7 +88,7 @@ public class H2FilmRepository implements FilmRepository {
 
             statement.setString(1, film.getName());
             statement.setString(2, film.getDescription());
-            statement.setDate(3, new java.sql.Date(film.getReleaseDate().getTime()));
+            statement.setDate(3, java.sql.Date.valueOf(film.getReleaseDate()));
             statement.setInt(4, film.getDuration());
             statement.setString(5, film.getGenre());
             statement.setString(6, film.getMpaRate().toString());
@@ -106,7 +106,7 @@ public class H2FilmRepository implements FilmRepository {
         jdbcTemplate.update(updateFilmByIdQuery,
                 film.getName(),
                 film.getDescription(),
-                new java.sql.Date(film.getReleaseDate().getTime()),
+                java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),
                 film.getGenre(),
                 film.getMpaRate(),
@@ -174,7 +174,7 @@ public class H2FilmRepository implements FilmRepository {
                             .id(rowSet.getLong("ID"))
                             .name(rowSet.getString("_NAME"))
                             .description(rowSet.getString("DESCRIPTION"))
-                            .releaseDate(rowSet.getDate("RELEASE_DATE"))
+                            .releaseDate(Objects.requireNonNull(rowSet.getDate("RELEASE_DATE")).toLocalDate())
                             .duration(rowSet.getInt("DURATION"))
                             .genre(rowSet.getString("GENRE"))
                             //.mpaRate(MotionPictureAssociationRate.valueOf(rowSet.getString("MPA_RATE")))
@@ -191,7 +191,7 @@ public class H2FilmRepository implements FilmRepository {
                 .id(rowSet.getLong("ID"))
                 .name(rowSet.getString("_NAME"))
                 .description(rowSet.getString("DESCRIPTION"))
-                .releaseDate(rowSet.getDate("RELEASE_DATE"))
+                .releaseDate(Objects.requireNonNull(rowSet.getDate("RELEASE_DATE")).toLocalDate())
                 .duration(rowSet.getInt("DURATION"))
                 .genre(rowSet.getString("GENRE"))
                 .mpaRate(MotionPictureAssociationRate.valueOf(rowSet.getString("MPA_RATE")))
@@ -210,7 +210,7 @@ public class H2FilmRepository implements FilmRepository {
                             .id(userRows.getLong("ID"))
                             .name(userRows.getString("_NAME"))
                             .login(userRows.getString("LOGIN"))
-                            .birthday(userRows.getDate("birthday"))
+                            .birthday(Objects.requireNonNull(userRows.getDate("birthday")).toLocalDate())
                             .email(userRows.getString("email"))
                             .build()
             );

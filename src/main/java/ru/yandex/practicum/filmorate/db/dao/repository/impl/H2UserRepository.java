@@ -72,7 +72,7 @@ public class H2UserRepository implements UserRepository {
             statement.setString(1, user.getName());
             statement.setString(2, user.getLogin());
             statement.setString(3, user.getEmail());
-            statement.setDate(4, new java.sql.Date(user.getBirthday().getTime()));
+            statement.setDate(4, java.sql.Date.valueOf(user.getBirthday()));
 
             return statement;
         }, keyHolder);
@@ -136,7 +136,7 @@ public class H2UserRepository implements UserRepository {
                     .id(rowSet.getLong("ID"))
                     .name(rowSet.getString("_NAME"))
                     .login(rowSet.getString("login"))
-                    .birthday(rowSet.getDate("birthday"))
+                    .birthday(Objects.requireNonNull(rowSet.getDate("birthday")).toLocalDate())
                     .email(rowSet.getString("email"))
                     .build()
             );
@@ -149,7 +149,7 @@ public class H2UserRepository implements UserRepository {
                 .id(rowSet.getLong("ID"))
                 .name(rowSet.getString("_NAME"))
                 .login(rowSet.getString("login"))
-                .birthday(rowSet.getDate("birthday"))
+                .birthday(Objects.requireNonNull(rowSet.getDate("birthday")).toLocalDate())
                 .email(rowSet.getString("email"))
                 .friendLists(getSubList(userId, "CONFIRMED"))
                 .friendRequestList(getSubList(userId, "UNCONFIRMED"))
@@ -167,7 +167,7 @@ public class H2UserRepository implements UserRepository {
                             .id(userRows.getLong("ID"))
                             .name(userRows.getString("_name"))
                             .login(userRows.getString("LOGIN"))
-                            .birthday(userRows.getDate("birthday"))
+                            .birthday(Objects.requireNonNull(userRows.getDate("birthday")).toLocalDate())
                             .email(userRows.getString("email"))
                             .build()
             );
