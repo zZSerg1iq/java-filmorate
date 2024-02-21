@@ -28,8 +28,8 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     }
 
     @Override
-    public UserDto getUser(long userId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
+    public UserDto getUserById(long userId) {
+        Optional<User> userOpt = userRepository.getUserById(userId);
 
         if (userOpt.isEmpty()) {
             throw new DataNotFoundException("Пользователя с id " + userId + " не существует");
@@ -59,7 +59,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        Optional<User> optionalUser = userRepository.getUser(userDto.getId());
+        Optional<User> optionalUser = userRepository.getUserById(userDto.getId());
         if (optionalUser.isEmpty()) {
             throw new InternalDataException("Внутренняя ошибка: Ошибка обновления данных пользователя с id " + userDto.getId() + ". Пользователя не существует.");
         }
@@ -75,7 +75,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public void deleteUser(long userId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
+        Optional<User> userOpt = userRepository.getUserById(userId);
         if (userOpt.isEmpty()) {
             throw new DataNotFoundException("Ошибка удаления пользователя с id " + userId + ". Пользователя не существует.");
         }
@@ -86,8 +86,8 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public UserDto addFriend(long userId, long friendId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
-        Optional<User> friendOpt = userRepository.getUser(friendId);
+        Optional<User> userOpt = userRepository.getUserById(userId);
+        Optional<User> friendOpt = userRepository.getUserById(friendId);
 
         if (userOpt.isEmpty()) {
             throw new InternalDataException("Внутренняя ошибка: Ошибка добавления в друзья к пользователю с id " + userId + ". Пользователя не существует.");
@@ -96,28 +96,24 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
             throw new DataNotFoundException("Ошибка добавления пользователя с id " + friendId + " в список друзей пользователя " + userId + ". Пользователь не найден.");
         }
 
-
         User user = userOpt.get();
         User friend = friendOpt.get();
 
-        if (!userRepository.addFriend(userId, friendId)) {
+        if (user.getFriendLists().contains(friend)) {
             throw new DataConflictException("Конфликт добавления в друзья пользователя с id " + friendId + ". Пользователь уже находится в списке друзей");
         }
-        if (!userRepository.addFriend(friendId, userId)) {
-            throw new DataConflictException("Конфликт добавления в друзья пользователя с id " + userId + ". Пользователь уже находится в списке друзей");
-        }
+        userRepository.addFriend(userId, friendId);
 
         log.warn("Новые друзья: " + user.getLogin() + " & " + friend.getLogin());
-        userRepository.updateUser(user);
-        userRepository.updateUser(friend);
 
+        user.getFriendLists().add(friend);
         return new UserMapper().entityToFullDto(user);
     }
 
     @Override
     public UserDto deleteFriend(long userId, long friendId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
-        Optional<User> friendOpt = userRepository.getUser(friendId);
+        Optional<User> userOpt = userRepository.getUserById(userId);
+        Optional<User> friendOpt = userRepository.getUserById(friendId);
 
         if (userOpt.isEmpty()) {
             throw new InternalDataException("Внутренняя ошибка: Ошибка удаления из друзей у пользователя с id " + userId + ". Пользователя не существует.");
@@ -136,17 +132,15 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
             throw new DataNotFoundException("Ошибка удаления пользователя с id " + userId + " из списка друзей. Пользователя нет с списке друзей");
         }
 
-
         log.warn("Прекращены дружба: " + user.getLogin() + " & " + friend.getLogin());
-        userRepository.updateUser(user);
-        userRepository.updateUser(friend);
+        user.getFriendLists().remove(friend);
 
         return new UserMapper().entityToFullDto(user);
     }
 
     @Override
     public List<UserDto> getFriendList(long userId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
+        Optional<User> userOpt = userRepository.getUserById(userId);
         if (userOpt.isEmpty()) {
             throw new DataNotFoundException("Ошибка получения списка друзей: пользователя с id " + userId + " не существует");
         }
@@ -157,8 +151,8 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
     @Override
     public List<UserDto> getCommonFriendList(long userId, long otherUserId) {
-        Optional<User> userOpt = userRepository.getUser(userId);
-        Optional<User> otherOpt = userRepository.getUser(otherUserId);
+        Optional<User> userOpt = userRepository.getUserById(userId);
+        Optional<User> otherOpt = userRepository.getUserById(otherUserId);
         if (userOpt.isEmpty()) {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка получения списка общих друзей. Пользователя с id " + userId + " не существует.");
         }

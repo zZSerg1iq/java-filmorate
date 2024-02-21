@@ -21,10 +21,10 @@ public class UserMapper {
     public UserDto entityToFullDto(User user) {
         UserDto userDto = entityToSimpleDto(user);
 
-        if (user.getFriendLists().size() > 0) {
+        if (user.getFriendLists() != null && user.getFriendLists().size() > 0) {
             userDto.setFriendList(getFriendList(user.getFriendLists()));
         }
-        if (user.getFriendRequestList().size() > 0) {
+        if (user.getFriendRequestList() != null && user.getFriendRequestList().size() > 0) {
             userDto.setFriendRequestList(getFriendRequestList(user.getFriendRequestList()));
         }
         return userDto;

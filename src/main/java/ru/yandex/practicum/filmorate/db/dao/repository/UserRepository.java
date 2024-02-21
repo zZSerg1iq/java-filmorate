@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<User> getUser(long userId);
+    Optional<User> getUserById(long userId);
 
     List<User> getUserList();
 
@@ -17,7 +17,7 @@ public interface UserRepository {
 
     void deleteUser(long userId);
 
-    boolean addFriend(long userId, long friendId);
+    void addFriend(long userId, long friendId);
 
     boolean deleteFriend(long userId, long friendId);
 

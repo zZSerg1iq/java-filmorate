@@ -2,14 +2,18 @@ package ru.yandex.practicum.filmorate.db.dao.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.db.dao.entity.User;
 import ru.yandex.practicum.filmorate.db.dao.repository.UserRepository;
-import ru.yandex.practicum.filmorate.db.enums.FriendRequestStatus;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -22,39 +26,28 @@ public class H2UserRepository implements UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     private final String getUserByIdQuery = "select * from _users where id = ?";
+
     private final String getUserFriendListQuery =
             "select u.id, u._name, u.login, u.birthday, u.email from friend_list fl " +
-                    "inner join _users u on u.id = fl.user_id " +
-                    "where user_id = ? and friend_request_status like ?";
+                    "inner join _users u on u.id = fl.friend_id " +
+                    "where fl.user_id = ? and fl.friend_request_status = ?";
 
-    private final String getUserLikesQuery =
-            "select u.id, u._name, u.login, u.birthday, u.email " +
-                    "from user_likes ul " +
-                    "inner join _users u on u.id = ul.user_id " +
-                    "where ul.User_id = ?";
-
-    private final String findUserByDataQuery =
-            "select * from Users f " +
-                    "where f._name like CONCAT('%', ? '%') " +
-                    "and f.RELEASE_DATE = ?";
-
-    private final String getUserListQuery = "select * from Users";
+    private final String getUserListQuery = "select * from _users";
 
     private final String createUserQuery =
-            "INSERT INTO Users(_name, description, release_date, duration, genre, mpa_rate) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO _users(_name, login, email, birthday) " +
+                    "VALUES (?, ?, ?, ?)";
 
-    private final String updateUserByIdQuery = "UPDATE User SET _name = ?, description = ?, release_date = ?, duration = ?, genre = ?, mpa_rate = ? WHERE id = ?";
-    private final String deleteUserByIdQuery = "delete from Users where id = ?";
-    private final String deleteUserUserLikes = "delete from user_likes where User_id = ?";
+    private final String updateUserByIdQuery = "UPDATE _users SET _name = ?, login = ?, email = ?, birthday = ? WHERE id = ?";
+    private final String deleteUserByIdQuery = "delete from _users where id = ?";
+    private final String deleteUserFriendsQuery = "delete from friend_list where user_id = ? or friend_id = ?";
 
-    private final String addUserLikeQuery = "insert into user_likes(user_id, User_id) values(?, ?)";
-    private final String deleteUserLikeQuery = "delete from user_likes where user_id = ? and User_id = ?";
+    private final String addUserFriendQuery = "insert into friend_list(user_id, friend_id, friend_request_status) values(?, ?, ?)";
+    private final String deleteFriendQuery = "delete from friend_list where user_id = ? and friend_id = ? or user_id = ? and friend_id = ?";
 
     @Override
-    public Optional<User> getUser(long userId) {
+    public Optional<User> getUserById(long userId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(getUserByIdQuery, userId);
         if (userRows.next()) {
             return Optional.of(getUserFromRow(userRows, userId));
@@ -64,41 +57,92 @@ public class H2UserRepository implements UserRepository {
 
     @Override
     public List<User> getUserList() {
-        return null;
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(getUserListQuery);
+        return getUserListFromRowSet(rowSet);
     }
 
     @Override
     public User addUser(User user) {
-        FriendRequestStatus.valueOf("CONFIRMED");
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        return null;
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(createUserQuery,
+                    Statement.RETURN_GENERATED_KEYS);
+
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getLogin());
+            statement.setString(3, user.getEmail());
+            statement.setDate(4, new java.sql.Date(user.getBirthday().getTime()));
+
+            return statement;
+        }, keyHolder);
+
+        user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        return user;
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        jdbcTemplate.update(updateUserByIdQuery,
+                user.getName(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getBirthday(),
+                user.getId()
+        );
+
+        return user;
     }
 
     @Override
     public void deleteUser(long userId) {
-
+        jdbcTemplate.update(deleteUserFriendsQuery, userId);
+        jdbcTemplate.update(deleteUserByIdQuery, userId);
     }
 
     @Override
-    public boolean addFriend(long userId, long friendId) {
-        return false;
+    public void addFriend(long userId, long friendId) {
+        jdbcTemplate.update(addUserFriendQuery, userId, friendId, "CONFIRMED");
+        jdbcTemplate.update(addUserFriendQuery, friendId, userId, "UNCONFIRMED");
     }
 
     @Override
     public boolean deleteFriend(long userId, long friendId) {
-        return false;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(deleteFriendQuery,
+                    Statement.RETURN_GENERATED_KEYS);
+            statement.setLong(1, userId);
+            statement.setLong(2, friendId);
+            statement.setLong(3, friendId);
+            statement.setLong(4, userId);
+            return statement;
+        }, keyHolder);
+
+        return keyHolder.getKey() != null;
     }
 
     @Override
     public List<User> getFriendList(long userId) {
-        return null;
+        return getSubList(userId, "CONFIRMED");
     }
 
+    private List<User> getUserListFromRowSet(SqlRowSet rowSet) {
+        List<User> userList = new ArrayList<>();
+
+        while (rowSet.next()) {
+            userList.add(User.builder()
+                    .id(rowSet.getLong("ID"))
+                    .name(rowSet.getString("_NAME"))
+                    .login(rowSet.getString("login"))
+                    .birthday(rowSet.getDate("birthday"))
+                    .email(rowSet.getString("email"))
+                    .build()
+            );
+        }
+        return userList;
+    }
 
     private User getUserFromRow(SqlRowSet rowSet, long userId) {
         return User.builder()

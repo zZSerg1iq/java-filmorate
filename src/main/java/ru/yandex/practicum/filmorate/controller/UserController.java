@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable long id) {
-        return ResponseEntity.ok(userStorageService.getUser(id));
+        return ResponseEntity.ok(userStorageService.getUserById(id));
     }
 
     @GetMapping

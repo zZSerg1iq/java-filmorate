@@ -88,7 +88,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public FilmDto addUserLike(long filmId, long userId) {
-        UserDto userDto = userStorageService.getUser(userId);
+        UserDto userDto = userStorageService.getUserById(userId);
 
         Optional<Film> filmOpt = filmRepository.getFilmById(filmId);
         if (filmOpt.isEmpty()) {
@@ -111,7 +111,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public FilmDto deleteUserLike(long filmId, long userId) {
-        UserDto userDto = userStorageService.getUser(userId);
+        UserDto userDto = userStorageService.getUserById(userId);
 
         Optional<Film> filmOpt = filmRepository.getFilmById(filmId);
         if (filmOpt.isEmpty()) {

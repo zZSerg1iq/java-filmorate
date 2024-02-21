@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserRepositoryService {
 
-    UserDto getUser(long userId);
+    UserDto getUserById(long userId);
 
     List<UserDto> getUserList();
 

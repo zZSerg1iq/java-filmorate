@@ -20,7 +20,7 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> getUser(long userId) {
+    public Optional<User> getUserById(long userId) {
         return Optional.ofNullable(userDataStorage.get(userId));
     }
 
@@ -48,11 +48,10 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean addFriend(long userId, long friendId) {
-        if (!friendList.containsKey(userId)) {
+    public void addFriend(long userId, long friendId) {
+       if (!friendList.containsKey(userId)) {
             friendList.put(userId, new HashSet<>());
         }
-        return friendList.get(userId).add(friendId);
     }
 
     @Override

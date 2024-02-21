@@ -58,7 +58,6 @@ public class H2FilmRepository implements FilmRepository {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(getFilmByIdQuery, filmId);
         if (filmRows.next()) {
             Film film = getFilmFromRow(filmRows);
-            System.out.println(film);
             return Optional.of(film);
         }
         return Optional.empty();
