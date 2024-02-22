@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
-import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
-import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
 import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
@@ -40,27 +40,29 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             throw new DataNotFoundException("Фильм с id " + filmId + " не найден");
         }
 
-        return new FilmMapper().entityToDto(filmOpt.get());
+        return new FilmMapper().filmEntityToDto(filmOpt.get());
     }
 
     @Override
     public List<FilmDto> getFilmList() {
-        return new FilmMapper().entityListToDtoList(filmRepository.getFilmList());
+        return new FilmMapper().filmEntityListToDtoList(filmRepository.getFilmList());
     }
 
     @Override
     public FilmDto addFilm(FilmDto filmDto) {
         FilmMapper filmMapper = new FilmMapper();
+        System.out.println(filmDto);
 
-        Film film = new FilmMapper().dtoToEntity(filmDto);
+
+        Film film = new FilmMapper().filmDtoToEntity(filmDto);
         List<Film> result = filmRepository.findFilmByData(film);
         if (result.size() > 0) {
             throw new DataConflictException("Добавляемый фильм уже находится в базе");
         }
 
-        Film temp = filmRepository.addFilm(filmMapper.dtoToEntity(filmDto));
+        Film temp = filmRepository.addFilm(filmMapper.filmDtoToEntity(filmDto));
         log.info("Новый фильм добавлен: " + film);
-        return filmMapper.entityToDto(temp);
+        return filmMapper.filmEntityToDto(temp);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         }
 
         log.info("Данные фильма изменены: " + filmDto);
-        filmRepository.updateFilm(new FilmMapper().dtoToEntity(filmDto));
+        filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
         return filmDto;
     }
 
@@ -95,7 +97,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             throw new DataNotFoundException("Ошибка добавления лайка фильму: фильм " + filmId + " не найден");
         }
 
-        FilmDto filmDto = new FilmMapper().entityToDto(filmOpt.get());
+        FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
         if (!filmOpt.get().getUserLikes().contains(new UserMapper().dtoToEntity(userDto))) {
             filmRepository.addUserLike(filmId, userId);
@@ -118,7 +120,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             throw new DataNotFoundException("Ошибка удаления лайка у фильма: фильм " + filmId + " не найден");
         }
 
-        FilmDto filmDto = new FilmMapper().entityToDto(filmOpt.get());
+        FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
         if (filmOpt.get().getUserLikes().contains(new UserMapper().dtoToEntity(userDto))) {
             filmRepository.deleteUserLike(filmId, userId);
@@ -134,26 +136,26 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
     @Override
     public List<FilmDto> getTopRate(int count) {
         var topRate = filmRepository.getTopRate(count);
-        return new FilmMapper().entityListToDtoList(topRate);
+        return new FilmMapper().filmEntityListToDtoList(topRate);
     }
 
     @Override
     public List<GenreDto> getGenresList() {
-        return null;
+        return new FilmMapper().genresEntityListToDtoList(filmRepository.getGenres());
     }
 
     @Override
-    public GenreDto getGenreById() {
-        return null;
+    public GenreDto getGenreById(long id) {
+        return new FilmMapper().genreEntityToDto(filmRepository.getGenreById(id));
     }
 
     @Override
-    public List<MpaDto> getMpaList() {
-        return null;
+    public List<MpaRateDto> getMpaList() {
+        return new FilmMapper().mpaRateEntityToDto(filmRepository.getMpaRateList());
     }
 
     @Override
-    public MpaDto getMpaById() {
-        return null;
+    public MpaRateDto getMpaById(long id) {
+        return new FilmMapper().mpaRateEntityToDto(filmRepository.getMpaRateById(id));
     }
 }

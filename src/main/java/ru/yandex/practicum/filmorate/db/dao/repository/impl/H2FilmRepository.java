@@ -8,9 +8,10 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dao.entity.Genre;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
 import ru.yandex.practicum.filmorate.db.dao.entity.User;
 import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
-import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -27,35 +28,56 @@ public class H2FilmRepository implements FilmRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final String getFilmByIdQuery = "select * from films where id = ?";
+    private final String GET_FILM_BY_ID_QUERY = "select * from films where id = ?";
 
-    private final String getUserLikesQuery =
+    private final String GET_USER_LIKES_QUERY =
             "select u.id, u._name, u.login, u.birthday, u.email " +
                     "from user_likes ul " +
                     "inner join _users u on u.id = ul.user_id " +
                     "where ul.film_id = ?";
 
-    private final String findFilmByDataQuery =
+    private final String FIND_FILM_BY_DATA_QUERY =
             "select * from films f " +
-                    "where f._name like CONCAT('%', ? '%') " +
+                    "where f._name = ? " +
                     "and f.RELEASE_DATE = ?";
 
-    private final String getFilmListQuery = "select * from films";
+    private final String GET_FILM_LIST_QUERY = "select * from films";
 
-    private final String createFilmQuery =
-            "INSERT INTO films(_name, description, release_date, duration, genre, mpa_rate) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+    private final String CREATE_FILM_QUERY =
+            "INSERT INTO films(_name, description, release_date, duration) " +
+                    "VALUES (?, ?, ?, ?)";
 
-    private final String updateFilmByIdQuery = "UPDATE film SET _name = ?, description = ?, release_date = ?, duration = ?, genre = ?, mpa_rate = ? WHERE id = ?";
+    private final String CREATE_FILM_MPA_RATE =
+            "INSERT INTO film_mpa_rate (film_id, rate_id) " +
+                    "VALUES (?, ?)";
+
+    private final String GET_MPA_RATE_QUERY =
+            "select mr.id, mr._rate, mr.description from film_mpa_rate fmr " +
+                    "inner join mpa_rate mr on mr.id = fmr.rate_id " +
+                    "where film_id = ?";
+
+    private final String UPDATE_FILM_MPA_RATE = "UPDATE film_mpa_rate SET rate_id = ? WHERE film_id = ?";
+
+    private final String DELETE_FILM_MPA_RATE = "delete from film_mpa_rate where film_id = ?";
+    private final String UPDATE_FILM_BY_ID_QUERY = "UPDATE film SET _name = ?, description = ?, release_date = ?, duration = ?, genre = ?, mpa_rate = ? WHERE id = ?";
     private final String deleteFilmByIdQuery = "delete from films where id = ?";
-    private final String deleteFilmUserLikes = "delete from user_likes where film_id = ?";
+    private final String DELETE_FILM_USER_LIKES = "delete from user_likes where film_id = ?";
 
-    private final String addUserLikeQuery = "insert into user_likes(user_id, film_id) values(?, ?)";
-    private final String deleteUserLikeQuery = "delete from user_likes where user_id = ? and film_id = ?";
+    private final String ADD_USER_LIKE_QUERY = "insert into user_likes(user_id, film_id) values(?, ?)";
+    private final String DELETE_USER_LIKE_QUERY = "delete from user_likes where user_id = ? and film_id = ?";
+
+    private final String GET_FILM_GENRES_QUERY =
+            "select g._name from film_genres fg" +
+                    " inner join genres g on g.id = fg.genre_id " +
+                    " where film_id = ?";
+
+    private final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";
+
+    private final String CREATE_FILM_GENRES = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
 
     @Override
     public Optional<Film> getFilmById(long filmId) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(getFilmByIdQuery, filmId);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(GET_FILM_BY_ID_QUERY, filmId);
         if (filmRows.next()) {
             Film film = getFilmFromRow(filmRows);
             return Optional.of(film);
@@ -66,7 +88,7 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public List<Film> findFilmByData(Film film) {
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(findFilmByDataQuery,
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(FIND_FILM_BY_DATA_QUERY,
                 film.getName(), film.getReleaseDate());
 
         return getFilmListFromRowSet(rowSet);
@@ -74,7 +96,7 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public List<Film> getFilmList() {
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(getFilmListQuery);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(GET_FILM_LIST_QUERY);
         return getFilmListFromRowSet(rowSet);
     }
 
@@ -83,42 +105,55 @@ public class H2FilmRepository implements FilmRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(createFilmQuery,
+            PreparedStatement statement = connection.prepareStatement(CREATE_FILM_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, film.getName());
             statement.setString(2, film.getDescription());
             statement.setDate(3, java.sql.Date.valueOf(film.getReleaseDate()));
             statement.setInt(4, film.getDuration());
-            statement.setString(5, film.getGenre());
-            statement.setString(6, film.getMpaRate().toString());
-
             return statement;
-
         }, keyHolder);
-
         film.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+
+        jdbcTemplate.update(CREATE_FILM_MPA_RATE, film.getId(), film.getMpaRate().getId());
+
+        List<Genre> genres = film.getGenres();
+        for (Genre genre : genres) {
+            jdbcTemplate.update(CREATE_FILM_GENRES, film.getId(), genre.getId());
+        }
+
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        jdbcTemplate.update(updateFilmByIdQuery,
+        jdbcTemplate.update(UPDATE_FILM_BY_ID_QUERY,
                 film.getName(),
                 film.getDescription(),
                 java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),
-                film.getGenre(),
                 film.getMpaRate(),
                 film.getId());
+
+        jdbcTemplate.update(UPDATE_FILM_MPA_RATE, film.getMpaRate().getId(), film.getId());
+
+        jdbcTemplate.update(DELETE_FILM_GENRES, film.getId());
+
+        // Добавляем новые связи жанров с фильмом
+        List<Genre> genres = film.getGenres();
+        for (Genre genre : genres) {
+            jdbcTemplate.update(CREATE_FILM_GENRES, film.getId(), genre.getId());
+        }
 
         return film;
     }
 
     @Override
     public void deleteFilm(long id) {
-        jdbcTemplate.update(deleteFilmUserLikes, id);
+        jdbcTemplate.update(DELETE_FILM_USER_LIKES, id);
         jdbcTemplate.update(deleteFilmByIdQuery, id);
+        jdbcTemplate.update(DELETE_FILM_MPA_RATE, id);
     }
 
     @Override
@@ -126,7 +161,7 @@ public class H2FilmRepository implements FilmRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(addUserLikeQuery,
+            PreparedStatement statement = connection.prepareStatement(ADD_USER_LIKE_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, userId);
             statement.setLong(2, filmId);
@@ -142,7 +177,7 @@ public class H2FilmRepository implements FilmRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(deleteUserLikeQuery,
+            PreparedStatement statement = connection.prepareStatement(DELETE_USER_LIKE_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, userId);
             statement.setLong(2, filmId);
@@ -155,7 +190,7 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public List<Film> getTopRate(int count) {
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(getFilmListQuery);
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(GET_FILM_LIST_QUERY);
 
         List<Film> filmList = getFilmListFromRowSet(sqlRowSet);
         filmList.sort(Comparator.comparing(film -> film.getUserLikes().size(), Comparator.reverseOrder()));
@@ -163,44 +198,121 @@ public class H2FilmRepository implements FilmRepository {
         return filmList.stream().limit(count).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Genre> getGenres() {
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select * from genres");
+        List<Genre> genres = new ArrayList<>();
+        while (sqlRowSet.next()) {
+            genres.add(Genre.builder()
+                    .id(sqlRowSet.getLong("ID"))
+                    .name(sqlRowSet.getString("_NAME"))
+                    .build());
+        }
+
+        return genres;
+    }
+
+    @Override
+    public Genre getGenreById(long id) {
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
+
+        if (sqlRowSet.next()) {
+            return Genre.builder()
+                    .id(sqlRowSet.getLong("ID"))
+                    .name(sqlRowSet.getString("_NAME"))
+                    .build();
+        }
+        return new Genre();
+    }
+
+    @Override
+    public List<MpaRate> getMpaRateList() {
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select * from mpa_rate");
+        List<MpaRate> rateList = new ArrayList<>();
+
+        while (sqlRowSet.next()) {
+            rateList.add(MpaRate.builder()
+                    .id(sqlRowSet.getLong("ID"))
+                    .rate(sqlRowSet.getString("_rate"))
+                    .description(sqlRowSet.getString("description"))
+                    .build());
+        }
+
+        return rateList;
+    }
+
+    @Override
+    public MpaRate getMpaRateById(long id) {
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("select * from mpa_rate");
+
+        if (sqlRowSet.next()) {
+            return MpaRate.builder()
+                    .id(sqlRowSet.getLong("ID"))
+                    .rate(sqlRowSet.getString("_rate"))
+                    .description(sqlRowSet.getString("description"))
+                    .build();
+        }
+
+        return new MpaRate();
+    }
 
     private List<Film> getFilmListFromRowSet(SqlRowSet rowSet) {
         //showQueryInfo(rowSet);
 
         List<Film> filmList = new ArrayList<>();
         while (rowSet.next()) {
-            filmList.add(
-                    Film.builder()
-                            .id(rowSet.getLong("ID"))
-                            .name(rowSet.getString("_NAME"))
-                            .description(rowSet.getString("DESCRIPTION"))
-                            .releaseDate(Objects.requireNonNull(rowSet.getDate("RELEASE_DATE")).toLocalDate())
-                            .duration(rowSet.getInt("DURATION"))
-                            .genre(rowSet.getString("GENRE"))
-                            //.mpaRate(MotionPictureAssociationRate.valueOf(rowSet.getString("MPA_RATE")))
-                            .userLikes(getUserLikes(rowSet.getLong("ID")))
-                            .build()
-            );
+            filmList.add(getFilmFromRow(rowSet));
         }
 
         return filmList;
     }
 
     private Film getFilmFromRow(SqlRowSet rowSet) {
+        long id = rowSet.getLong("ID");
+
         return Film.builder()
-                .id(rowSet.getLong("ID"))
+                .id(id)
                 .name(rowSet.getString("_NAME"))
                 .description(rowSet.getString("DESCRIPTION"))
                 .releaseDate(Objects.requireNonNull(rowSet.getDate("RELEASE_DATE")).toLocalDate())
                 .duration(rowSet.getInt("DURATION"))
-                .genre(rowSet.getString("GENRE"))
-                .mpaRate(MotionPictureAssociationRate.valueOf(rowSet.getString("MPA_RATE")))
-                .userLikes(getUserLikes(rowSet.getLong("ID")))
+                .mpaRate(getFilmMPARate(id))
+                .genres(getGenres(id))
+                .userLikes(getUserLikes(id))
                 .build();
     }
 
+    private MpaRate getFilmMPARate(long filmId) {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(GET_MPA_RATE_QUERY, filmId);
+        if (!userRows.next()) {
+            return new MpaRate();
+        }
+
+        return MpaRate
+                .builder()
+                .id(userRows.getLong("ID"))
+                .rate(userRows.getString("rate"))
+                .description(userRows.getString("description"))
+                .build();
+    }
+
+    private List<Genre> getGenres(long filmId) {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(GET_FILM_GENRES_QUERY, filmId);
+
+        List<Genre> userList = new ArrayList<>();
+        while (userRows.next()) {
+            userList.add(
+                    Genre.builder()
+                            .id(userRows.getLong("ID"))
+                            .name(userRows.getString("_NAME"))
+                            .build()
+            );
+        }
+        return userList;
+    }
+
     private List<User> getUserLikes(long filmId) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(getUserLikesQuery, filmId);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(GET_USER_LIKES_QUERY, filmId);
 
         List<User> userList = new ArrayList<>();
         while (userRows.next()) {

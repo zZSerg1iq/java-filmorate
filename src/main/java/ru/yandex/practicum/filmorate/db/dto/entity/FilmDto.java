@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.db.dto.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 import ru.yandex.practicum.filmorate.validation.DateTimeMin;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +17,8 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FilmDto {
 
     private long id;
@@ -33,9 +36,11 @@ public class FilmDto {
     @Positive
     private int duration;
 
-    private String genre;
+    private MpaRateDto mpa;
 
-    private MotionPictureAssociationRate tmaRate;
+    private List<GenreDto> genres;
+
+    private int rate;
 
     private List<UserDto> userLikes = new ArrayList<>();
 
@@ -50,5 +55,23 @@ public class FilmDto {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, releaseDate, duration);
+    }
+
+    public int getRate() {
+        return userLikes.size();
+    }
+
+    @Override
+    public String toString() {
+        return "FilmDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", releaseDate=" + releaseDate +
+                ", duration=" + duration +
+                ", mpaRate=" + mpa +
+                ", genres=" + genres +
+                ", userLikes=" + userLikes +
+                '}';
     }
 }

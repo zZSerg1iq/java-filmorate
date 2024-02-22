@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS friend_list cascade ;
 DROP TABLE IF EXISTS user_likes cascade ;
 DROP TABLE IF EXISTS genres cascade ;
 DROP TABLE IF EXISTS film_genres cascade ;
+DROP TABLE IF EXISTS mpa_rate cascade ;
+DROP TABLE IF EXISTS film_mpa_rate cascade ;
+
 
 -- Создание таблицы User
 CREATE TABLE IF NOT EXISTS _users (
@@ -20,9 +23,7 @@ CREATE TABLE IF NOT EXISTS films (
     _name VARCHAR(50),
     description VARCHAR(200),
     release_date DATE,
-    duration INT,
-    genre VARCHAR(20),
-    mpa_rate VARCHAR(20)
+    duration INT
 );
 
 -- Создание таблицы FriendList
@@ -46,7 +47,7 @@ CREATE TABLE IF NOT EXISTS user_likes (
 
 create table if not exists genres (
   id int auto_increment primary key,
-  name varchar(50)
+  _name varchar(50)
 );
 
 CREATE TABLE IF NOT EXISTS film_genres (
@@ -55,4 +56,18 @@ CREATE TABLE IF NOT EXISTS film_genres (
   genre_id INT,
   FOREIGN KEY (film_id) REFERENCES films(id),
   FOREIGN KEY (genre_id) REFERENCES genres(id)
+);
+
+create table if not exists mpa_rate (
+  id int auto_increment primary key,
+  _rate varchar(10),
+  description varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS film_mpa_rate (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  film_id INT,
+  rate_id INT,
+  FOREIGN KEY (film_id) REFERENCES films(id),
+  FOREIGN KEY (rate_id) REFERENCES mpa_rate(id)
 );

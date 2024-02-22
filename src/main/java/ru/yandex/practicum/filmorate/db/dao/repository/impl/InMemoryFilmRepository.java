@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.db.dao.repository.impl;
 
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dao.entity.Genre;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
 import ru.yandex.practicum.filmorate.db.dao.repository.FilmRepository;
 
 import java.util.*;
@@ -94,5 +96,25 @@ public class InMemoryFilmRepository implements FilmRepository {
                 .limit(count)
                 .map(longSetEntry -> filmDataStorage.get(longSetEntry.getKey()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Genre> getGenres() {
+        return null;
+    }
+
+    @Override
+    public Genre getGenreById(long id) {
+        return null;
+    }
+
+    @Override
+    public List<MpaRate> getMpaRateList() {
+        return null;
+    }
+
+    @Override
+    public MpaRate getMpaRateById(long id) {
+        return null;
     }
 }

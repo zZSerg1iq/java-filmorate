@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.db.dto.servise;
 
-import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
-import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ public interface FilmRepositoryService {
 
     List<GenreDto> getGenresList();
 
-    GenreDto getGenreById();
+    GenreDto getGenreById(long id);
 
-    List<MpaDto> getMpaList();
+    List<MpaRateDto> getMpaList();
 
-    MpaDto getMpaById();
+    MpaRateDto getMpaById(long id);
 }

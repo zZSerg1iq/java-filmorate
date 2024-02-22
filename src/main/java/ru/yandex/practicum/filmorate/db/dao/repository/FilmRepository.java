@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.db.dao.repository;
 
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
+import ru.yandex.practicum.filmorate.db.dao.entity.Genre;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +27,11 @@ public interface FilmRepository {
 
     List<Film> getTopRate(int count);
 
+    List<Genre> getGenres();
+
+    Genre getGenreById(long id);
+
+    List<MpaRate> getMpaRateList();
+
+    MpaRate getMpaRateById(long id);
 }

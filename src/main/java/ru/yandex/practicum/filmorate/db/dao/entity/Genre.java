@@ -10,7 +10,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @ToString
-public class GenreDto {
+public class Genre {
 
     private long id;
     private String name;
@@ -19,7 +19,7 @@ public class GenreDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GenreDto genreDto = (GenreDto) o;
+        Genre genreDto = (Genre) o;
         return Objects.equals(name, genreDto.name);
     }
 

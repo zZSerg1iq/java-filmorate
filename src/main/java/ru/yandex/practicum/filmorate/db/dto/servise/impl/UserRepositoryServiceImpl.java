@@ -61,7 +61,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     public UserDto updateUser(UserDto userDto) {
         Optional<User> optionalUser = userRepository.getUserById(userDto.getId());
         if (optionalUser.isEmpty()) {
-            throw new InternalDataException("Внутренняя ошибка: Ошибка обновления данных пользователя с id " + userDto.getId() + ". Пользователя не существует.");
+            throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных пользователя с id " + userDto.getId() + ". Пользователя не существует.");
         }
 
         if (userDto.getName() == null || userDto.getName().isBlank()) {
@@ -128,9 +128,6 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (!userRepository.deleteFriend(userId, friendId)) {
             throw new DataNotFoundException("Ошибка удаления пользователя с id " + friendId + " из списка друзей. Пользователя нет с списке друзей");
         }
-        if (!userRepository.deleteFriend(friendId, userId)) {
-            throw new DataNotFoundException("Ошибка удаления пользователя с id " + userId + " из списка друзей. Пользователя нет с списке друзей");
-        }
 
         log.warn("Прекращены дружба: " + user.getLogin() + " & " + friend.getLogin());
         user.getFriendLists().remove(friend);
@@ -177,4 +174,5 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
 
         return new UserMapper().entityToFullDtoList(commonFriends);
     }
+
 }

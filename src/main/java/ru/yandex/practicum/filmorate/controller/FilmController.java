@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.db.dao.entity.GenreDto;
-import ru.yandex.practicum.filmorate.db.dao.entity.MpaDto;
+import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
+import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 
 import javax.validation.Valid;
@@ -78,17 +79,17 @@ public class FilmController {
 
     @GetMapping("/genres/{id}")
     public ResponseEntity<GenreDto> getGenreById(@PathVariable("id") int id) {
-        return ResponseEntity.ok(filmStorageService.getGenreById());
+        return ResponseEntity.ok(filmStorageService.getGenreById(id));
     }
 
     @GetMapping("/mpa")
-    public ResponseEntity<List<MpaDto>> getMpaList() {
+    public ResponseEntity<List<MpaRateDto>> getMpaList() {
         return ResponseEntity.ok(filmStorageService.getMpaList());
     }
 
     @GetMapping("/mpa/{id}")
-    public ResponseEntity<MpaDto> getMpaById(@PathVariable("id") int id) {
-        return ResponseEntity.ok(filmStorageService.getMpaById());
+    public ResponseEntity<MpaRateDto> getMpaById(@PathVariable("id") int id) {
+        return ResponseEntity.ok(filmStorageService.getMpaById(id));
     }
 
 }

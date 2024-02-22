@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.db.dao.entity;
 
 import lombok.*;
-import ru.yandex.practicum.filmorate.db.enums.MotionPictureAssociationRate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,9 +24,9 @@ public class Film {
 
     private int duration;
 
-    private String genre;
+    private MpaRate mpaRate;
 
-    private MotionPictureAssociationRate mpaRate;
+    private List<Genre> genres;
 
     private List<User> userLikes;
 
@@ -36,12 +35,11 @@ public class Film {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Film film = (Film) o;
-        return duration == film.duration && name.equals(film.name) && Objects.equals(description, film.description) && releaseDate.equals(film.releaseDate) && Objects.equals(genre, film.genre) && mpaRate == film.mpaRate;
+        return duration == film.duration && Objects.equals(name, film.name) && Objects.equals(description, film.description) && Objects.equals(releaseDate, film.releaseDate) && Objects.equals(mpaRate, film.mpaRate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, releaseDate, duration, genre, mpaRate);
+        return Objects.hash(name, description, releaseDate, duration, mpaRate);
     }
-
 }

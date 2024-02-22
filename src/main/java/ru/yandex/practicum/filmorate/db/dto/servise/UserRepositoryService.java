@@ -24,4 +24,5 @@ public interface UserRepositoryService {
     List<UserDto> getFriendList(long userId);
 
     List<UserDto> getCommonFriendList(long userId, long otherUserId);
+
 }
