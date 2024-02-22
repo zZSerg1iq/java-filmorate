@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;

@@ -49,7 +49,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public void addFriend(long userId, long friendId) {
-       if (!friendList.containsKey(userId)) {
+        if (!friendList.containsKey(userId)) {
             friendList.put(userId, new HashSet<>());
         }
     }

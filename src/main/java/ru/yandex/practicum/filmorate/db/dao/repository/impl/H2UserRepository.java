@@ -26,29 +26,24 @@ public class H2UserRepository implements UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final String getUserByIdQuery = "select * from _users where id = ?";
-
-    private final String getUserFriendListQuery =
+    private final String GET_USER_BY_ID = "select * from _users where id = ?";
+    private final String GET_USER_FRIENDLIST =
             "select u.id, u._name, u.login, u.birthday, u.email from friend_list fl " +
                     "inner join _users u on u.id = fl.friend_id " +
                     "where fl.user_id = ? and fl.friend_request_status = ?";
-
-    private final String getUserListQuery = "select * from _users";
-
-    private final String createUserQuery =
+    private final String GET_USER_LIST = "select * from _users";
+    private final String CREATE_USER =
             "INSERT INTO _users(_name, login, email, birthday) " +
                     "VALUES (?, ?, ?, ?)";
-
-    private final String updateUserByIdQuery = "UPDATE _users SET _name = ?, login = ?, email = ?, birthday = ? WHERE id = ?";
-    private final String deleteUserByIdQuery = "delete from _users where id = ?";
-    private final String deleteUserFriendsQuery = "delete from friend_list where user_id = ? or friend_id = ?";
-
-    private final String addUserFriendQuery = "insert into friend_list(user_id, friend_id, friend_request_status) values(?, ?, ?)";
-    private final String deleteFriendQuery = "delete from friend_list where user_id = ? and friend_id = ? or user_id = ? and friend_id = ?";
+    private final String UPDATE_USER_BY_ID = "UPDATE _users SET _name = ?, login = ?, email = ?, birthday = ? WHERE id = ?";
+    private final String DELETE_USER_BY_ID = "delete from _users where id = ?";
+    private final String DELETE_USER_FRIENDS = "delete from friend_list where user_id = ? or friend_id = ?";
+    private final String ADD_USER_FRIEND = "insert into friend_list(user_id, friend_id, friend_request_status) values(?, ?, ?)";
+    private final String DELETE_FRIEND = "delete from friend_list where user_id = ? and friend_id = ? or user_id = ? and friend_id = ?";
 
     @Override
     public Optional<User> getUserById(long userId) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(getUserByIdQuery, userId);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(GET_USER_BY_ID, userId);
         if (userRows.next()) {
             return Optional.of(getUserFromRow(userRows, userId));
         }
@@ -57,7 +52,7 @@ public class H2UserRepository implements UserRepository {
 
     @Override
     public List<User> getUserList() {
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(getUserListQuery);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(GET_USER_LIST);
         return getUserListFromRowSet(rowSet);
     }
 
@@ -66,7 +61,7 @@ public class H2UserRepository implements UserRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(createUserQuery,
+            PreparedStatement statement = connection.prepareStatement(CREATE_USER,
                     Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, user.getName());
@@ -83,7 +78,7 @@ public class H2UserRepository implements UserRepository {
 
     @Override
     public User updateUser(User user) {
-        jdbcTemplate.update(updateUserByIdQuery,
+        jdbcTemplate.update(UPDATE_USER_BY_ID,
                 user.getName(),
                 user.getLogin(),
                 user.getEmail(),
@@ -96,14 +91,14 @@ public class H2UserRepository implements UserRepository {
 
     @Override
     public void deleteUser(long userId) {
-        jdbcTemplate.update(deleteUserFriendsQuery, userId);
-        jdbcTemplate.update(deleteUserByIdQuery, userId);
+        jdbcTemplate.update(DELETE_USER_FRIENDS, userId);
+        jdbcTemplate.update(DELETE_USER_BY_ID, userId);
     }
 
     @Override
     public void addFriend(long userId, long friendId) {
-        jdbcTemplate.update(addUserFriendQuery, userId, friendId, "CONFIRMED");
-        jdbcTemplate.update(addUserFriendQuery, friendId, userId, "UNCONFIRMED");
+        jdbcTemplate.update(ADD_USER_FRIEND, userId, friendId, "CONFIRMED");
+        jdbcTemplate.update(ADD_USER_FRIEND, friendId, userId, "UNCONFIRMED");
     }
 
     @Override
@@ -111,7 +106,7 @@ public class H2UserRepository implements UserRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(deleteFriendQuery,
+            PreparedStatement statement = connection.prepareStatement(DELETE_FRIEND,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, userId);
             statement.setLong(2, friendId);
@@ -157,7 +152,7 @@ public class H2UserRepository implements UserRepository {
     }
 
     private List<User> getSubList(long userId, String friendRequestStatus) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(getUserFriendListQuery, userId, friendRequestStatus);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(GET_USER_FRIENDLIST, userId, friendRequestStatus);
 
         List<User> userList = new ArrayList<>();
         while (userRows.next()) {
