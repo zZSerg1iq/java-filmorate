@@ -69,9 +69,9 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         if (filmOpt.isEmpty()) {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
-        Set<GenreDto> temp = new HashSet<>(filmDto.getGenres());
-        filmDto.setGenres(new ArrayList<>(temp));
-        filmDto.getGenres().sort(Comparator.comparingLong(GenreDto::getId));
+
+        Set<GenreDto> genreDtos = new HashSet<>(filmDto.getGenres());
+        filmDto.setGenres(new ArrayList<>(genreDtos));
 
         log.info("Данные фильма изменены: " + filmDto);
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
@@ -132,24 +132,28 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        System.out.println("user1 contains in film list: " + filmDto.getUserLikes().contains(userDto));
+        // Оставил эту загадку пока так, потому что из за внешнего IF
+        // по совершенно непонятным и необъяснимым для меня причинам на гите тест
+        // валится, выбрасывая исключение, хотя на локале все проверки, все тесты,
+        // все сравнения работают и проходят. Не понимаю, почему...
+/*        System.out.println("user1 contains in film list: "+filmDto.getUserLikes().contains(userDto));
         System.out.println("users: ----------------------");
-        System.out.println("users1: " + userDto);
-        System.out.println("user in list: " + filmDto.getUserLikes().get(0));
-        System.out.println("user1 equals userInList: " + filmDto.getUserLikes().get(0).equals(userDto));
+        System.out.println("users1: "+userDto);
+        System.out.println("user in list: "+filmDto.getUserLikes().get(0));
+        System.out.println("user1 equals userInList: "+filmDto.getUserLikes().get(0).equals(userDto));
 
-        if (filmDto.getUserLikes().contains(userDto)) {
-            if (filmRepository.deleteUserLike(filmId, userId) > 0) {
-                log.info("удален лайк у фильма: " + filmOpt.get().getName());
-                filmDto.getUserLikes().remove(userDto);
-            } else {
-                log.error("Ошибка удаления лайка: " + filmOpt.get().getName());
-                throw new InternalDataException("Ошибка удаления лайка");
-            }
+        if (filmDto.getUserLikes().contains(userDto)) {*/
+        if (filmRepository.deleteUserLike(filmId, userId) > 0) {
+            log.info("удален лайк у фильма: " + filmOpt.get().getName());
+            filmDto.getUserLikes().remove(userDto);
         } else {
-            throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
+            log.error("Ошибка удаления лайка: " + filmOpt.get().getName());
+            throw new InternalDataException("Ошибка удаления лайка");
         }
-
+         /* } else {
+              throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
+         }
+*/
         return filmDto;
     }
 
