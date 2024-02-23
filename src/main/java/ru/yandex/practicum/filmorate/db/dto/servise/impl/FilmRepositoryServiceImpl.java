@@ -136,7 +136,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         System.out.println(filmDto.getUserLikes());
         System.out.println(filmDto.getUserLikes().get(0));
 
-        if (filmDto.getUserLikes().contains(userDto)) {
+        //if (filmDto.getUserLikes().contains(userDto)) {
             if (filmRepository.deleteUserLike(filmId, userId) > 0) {
                 log.info("удален лайк у фильма: " + filmOpt.get().getName());
                 filmDto.getUserLikes().remove(userDto);
@@ -144,9 +144,9 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
                 log.error("Ошибка удаления лайка: " + filmOpt.get().getName());
                 throw new InternalDataException("Ошибка удаления лайка");
             }
-        } else {
-            throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
-        }
+      //  } else {
+      //      throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
+       // }
 
         return filmDto;
     }
