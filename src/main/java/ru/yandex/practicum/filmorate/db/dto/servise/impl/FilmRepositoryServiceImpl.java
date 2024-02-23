@@ -16,8 +16,7 @@ import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -70,8 +69,9 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         if (filmOpt.isEmpty()) {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
-        // Set<GenreDto> temp = new HashSet<>(filmDto.getGenres());
-        // filmDto.setGenres(new ArrayList<>(temp));
+         Set<GenreDto> temp = new HashSet<>(filmDto.getGenres());
+         filmDto.setGenres(new ArrayList<>(temp));
+         filmDto.getGenres().sort(Comparator.comparingLong(GenreDto::getId));
 
         log.info("Данные фильма изменены: " + filmDto);
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
@@ -132,12 +132,13 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        System.out.println(filmDto.getUserLikes().contains(userDto));
-        System.out.println(userDto);
-        System.out.println(filmDto.getUserLikes());
-        System.out.println(filmDto.getUserLikes().get(0));
+        System.out.println("user1 contains in film list: "+filmDto.getUserLikes().contains(userDto));
+        System.out.println("users: ----------------------");
+        System.out.println("users1: "+userDto);
+        System.out.println("user in list: "+filmDto.getUserLikes().get(0));
+        System.out.println("user1 equals userInList: "+filmDto.getUserLikes().get(0).equals(userDto));
 
-        //if (filmDto.getUserLikes().contains(userDto)) {
+        if (filmDto.getUserLikes().contains(userDto)) {
         if (filmRepository.deleteUserLike(filmId, userId) > 0) {
             log.info("удален лайк у фильма: " + filmOpt.get().getName());
             filmDto.getUserLikes().remove(userDto);
@@ -145,9 +146,9 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             log.error("Ошибка удаления лайка: " + filmOpt.get().getName());
             throw new InternalDataException("Ошибка удаления лайка");
         }
-        //  } else {
-        //      throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
-        // }
+          } else {
+              throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
+         }
 
         return filmDto;
     }
