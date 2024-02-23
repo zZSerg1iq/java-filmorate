@@ -39,7 +39,7 @@ public class FilmDto {
 
     private MpaRateDto mpa;
 
-    private Set<GenreDto> genres;
+    private List<GenreDto> genres;
 
     private int rate;
 

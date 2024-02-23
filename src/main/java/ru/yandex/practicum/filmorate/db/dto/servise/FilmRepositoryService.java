@@ -25,7 +25,7 @@ public interface FilmRepositoryService {
 
     List<FilmDto> getTopRate(int count);
 
-    Set<GenreDto> getGenresList();
+    List<GenreDto> getGenresList();
 
     GenreDto getGenreById(long id);
 

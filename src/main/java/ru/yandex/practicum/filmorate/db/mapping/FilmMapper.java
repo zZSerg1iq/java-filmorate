@@ -10,9 +10,7 @@ import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FilmMapper {
 
@@ -28,38 +26,17 @@ public class FilmMapper {
     }
 
     public Film filmDtoToEntity(FilmDto filmDto) {
-        return Film.builder()
-                .id(filmDto.getId())
-                .name(filmDto.getName())
-                .duration(filmDto.getDuration())
-                .description(filmDto.getDescription())
-                .releaseDate(filmDto.getReleaseDate())
-                .mpa(mpaRateDtoToEntity(filmDto.getMpa()))
-                .genres(genresDtoListToEntityList(filmDto.getGenres()))
-                .build();
+        return Film.builder().id(filmDto.getId()).name(filmDto.getName()).duration(filmDto.getDuration()).description(filmDto.getDescription()).releaseDate(filmDto.getReleaseDate()).mpa(mpaRateDtoToEntity(filmDto.getMpa())).genres(genresDtoListToEntityList(filmDto.getGenres())).build();
     }
 
 
     public FilmDto filmEntityToDto(Film film) {
-        return FilmDto.builder()
-                .id(film.getId())
-                .name(film.getName())
-                .duration(film.getDuration())
-                .description(film.getDescription())
-                .releaseDate(film.getReleaseDate())
-                .genres(genresEntityListToDtoList(film.getGenres()))
-                .mpa(mpaRateEntityToDto(film.getMpa()))
-                .userLikes(userLikesEntityListToDtoList(film.getUserLikes()))
-                .build();
+        return FilmDto.builder().id(film.getId()).name(film.getName()).duration(film.getDuration()).description(film.getDescription()).releaseDate(film.getReleaseDate()).genres(genresEntityListToDtoList(film.getGenres())).mpa(mpaRateEntityToDto(film.getMpa())).userLikes(userLikesEntityListToDtoList(film.getUserLikes())).build();
     }
 
 
     public MpaRate mpaRateDtoToEntity(MpaRateDto mpaRateDto) {
-        return MpaRate.builder()
-                .id(mpaRateDto.getId())
-                .rate(mpaRateDto.getName())
-                .description(mpaRateDto.getDescription())
-                .build();
+        return MpaRate.builder().id(mpaRateDto.getId()).rate(mpaRateDto.getName()).description(mpaRateDto.getDescription()).build();
     }
 
     public List<MpaRateDto> mpaRateEntityToDto(List<MpaRate> mpaRate) {
@@ -72,14 +49,10 @@ public class FilmMapper {
     }
 
     public MpaRateDto mpaRateEntityToDto(MpaRate mpaRate) {
-        return MpaRateDto.builder()
-                .id(mpaRate.getId())
-                .name(mpaRate.getRate())
-                .description(mpaRate.getDescription())
-                .build();
+        return MpaRateDto.builder().id(mpaRate.getId()).name(mpaRate.getRate()).description(mpaRate.getDescription()).build();
     }
 
-    private List<Genre> genresDtoListToEntityList(Set<GenreDto> genres) {
+    private List<Genre> genresDtoListToEntityList(List<GenreDto> genres) {
         List<Genre> genreList = new ArrayList<>();
 
         if (genres == null || genres.size() == 0) {
@@ -87,18 +60,13 @@ public class FilmMapper {
         }
 
         for (GenreDto gen : genres) {
-            genreList.add(
-                    Genre.builder()
-                            .id(gen.getId())
-                            .name(gen.getName())
-                            .build()
-            );
+            genreList.add(Genre.builder().id(gen.getId()).name(gen.getName()).build());
         }
         return genreList;
     }
 
-    public Set<GenreDto> genresEntityListToDtoList(List<Genre> genres) {
-        Set<GenreDto> genreDtos = new HashSet<>();
+    public List<GenreDto> genresEntityListToDtoList(List<Genre> genres) {
+        List<GenreDto> genreDtos = new ArrayList<>();
 
         if (genres == null || genres.size() == 0) {
             return genreDtos;
@@ -111,10 +79,7 @@ public class FilmMapper {
     }
 
     public GenreDto genreEntityToDto(Genre genre) {
-        return GenreDto.builder()
-                .id(genre.getId())
-                .name(genre.getName())
-                .build();
+        return GenreDto.builder().id(genre.getId()).name(genre.getName()).build();
     }
 
     private List<UserDto> userLikesEntityListToDtoList(List<User> userLikes) {
