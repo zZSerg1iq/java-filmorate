@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -98,7 +98,7 @@ public class FilmMapper {
     }
 
     public Set<GenreDto> genresEntityListToDtoList(List<Genre> genres) {
-        Set<GenreDto> genreDtos = new LinkedHashSet<>();
+        Set<GenreDto> genreDtos = new HashSet<>();
 
         if (genres == null || genres.size() == 0) {
             return genreDtos;
