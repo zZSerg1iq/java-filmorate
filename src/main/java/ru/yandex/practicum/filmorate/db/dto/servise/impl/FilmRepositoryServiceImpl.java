@@ -72,11 +72,13 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
 
-        var temp = filmDto.getGenres();
-        filmDto.setGenres(new ArrayList<>());
-        for (GenreDto g : temp) {
-            if (!filmDto.getGenres().contains(g)) {
-                filmDto.getGenres().add(g);
+        if (filmDto.getGenres() != null && filmDto.getGenres().size() > 0) {
+            var temp = filmDto.getGenres();
+            filmDto.setGenres(new ArrayList<>());
+            for (GenreDto g : temp) {
+                if (!filmDto.getGenres().contains(g)) {
+                    filmDto.getGenres().add(g);
+                }
             }
         }
 
