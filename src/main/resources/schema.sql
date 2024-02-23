@@ -1,3 +1,4 @@
+/*
 DROP TABLE IF EXISTS _users cascade ;
 DROP TABLE IF EXISTS films cascade ;
 DROP TABLE IF EXISTS friend_list cascade ;
@@ -71,3 +72,4 @@ CREATE TABLE IF NOT EXISTS film_mpa_rate (
   FOREIGN KEY (film_id) REFERENCES films(id),
   FOREIGN KEY (rate_id) REFERENCES mpa_rate(id)
 );
+*/

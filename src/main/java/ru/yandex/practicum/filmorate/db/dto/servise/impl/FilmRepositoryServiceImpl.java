@@ -72,7 +72,13 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         log.info("Данные фильма изменены: " + filmDto);
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
-        return filmDto;
+
+        var result = filmRepository.getFilmById(filmDto.getId());
+        if (result.isPresent()){
+            return new FilmMapper().filmEntityToDto(result.get());
+        }
+        
+        throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
     }
 
     @Override
@@ -103,7 +109,6 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         } else {
             throw new DataConflictException("Ошибка добавления лайка фильму: этот пользователь уже ставил лайк ");
         }
-
 
         return filmDto;
     }

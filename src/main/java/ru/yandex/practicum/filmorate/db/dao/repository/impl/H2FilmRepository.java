@@ -294,7 +294,6 @@ public class H2FilmRepository implements FilmRepository {
 
         List<User> userList = new ArrayList<>();
         while (userRows.next()) {
-
             userList.add(
                     User.builder()
                             .id(userRows.getLong("ID"))

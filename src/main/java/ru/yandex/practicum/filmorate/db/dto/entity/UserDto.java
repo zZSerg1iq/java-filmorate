@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Data
@@ -39,4 +40,16 @@ public class UserDto {
 
     private List<UserDto> friendRequestList = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return id == userDto.id && Objects.equals(name, userDto.name) && Objects.equals(login, userDto.login) && Objects.equals(email, userDto.email) && Objects.equals(birthday, userDto.birthday) && Objects.equals(friendList, userDto.friendList) && Objects.equals(friendRequestList, userDto.friendRequestList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, login, email, birthday);
+    }
 }
