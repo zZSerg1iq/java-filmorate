@@ -15,7 +15,7 @@ public class MpaRateDto {
 
     @Positive
     private long id;
-    private String rate;
+    private String name;
 //    private String description;
 
 }

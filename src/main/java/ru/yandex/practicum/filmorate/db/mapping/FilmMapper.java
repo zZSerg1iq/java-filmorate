@@ -55,7 +55,7 @@ public class FilmMapper {
     public MpaRate mpaRateDtoToEntity(MpaRateDto mpaRateDto) {
         return MpaRate.builder()
                 .id(mpaRateDto.getId())
-                .rate(mpaRateDto.getRate())
+                .rate(mpaRateDto.getName())
     //           .description(mpaRateDto.getDescription())
                 .build();
     }
@@ -72,7 +72,7 @@ public class FilmMapper {
     public MpaRateDto mpaRateEntityToDto(MpaRate mpaRate) {
         return MpaRateDto.builder()
                 .id(mpaRate.getId())
-                .rate(mpaRate.getRate())
+                .name(mpaRate.getRate())
         //        .description(mpaRate.getDescription())
                 .build();
     }
