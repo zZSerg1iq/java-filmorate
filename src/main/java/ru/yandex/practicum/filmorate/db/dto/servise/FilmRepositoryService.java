@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
 import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 
 import java.util.List;
-import java.util.Set;
 
 public interface FilmRepositoryService {
 
