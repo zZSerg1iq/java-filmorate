@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 import ru.yandex.practicum.filmorate.db.mapping.FilmMapper;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
 import java.util.List;
 import java.util.Optional;
@@ -105,9 +106,14 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        if (!filmDto.getUserLikes().contains(userDto) && filmRepository.addUserLike(filmId, userId) > 0) {
-            log.info("Добавлен лайк к фильму: " + filmOpt.get().getName());
-            filmDto.getUserLikes().add(userDto);
+        if (!filmDto.getUserLikes().contains(userDto)) {
+            if (filmRepository.addUserLike(filmId, userId) > 0) {
+                log.info("Добавлен лайк к фильму: " + filmOpt.get().getName());
+                filmDto.getUserLikes().add(userDto);
+            } else {
+                log.error("Ошибка добавления лайка: " + filmOpt.get().getName());
+                throw new InternalDataException("Ошибка добавления лайка");
+            }
         } else {
             throw new DataConflictException("Ошибка добавления лайка фильму: этот пользователь уже ставил лайк ");
         }
@@ -126,9 +132,15 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        if (filmDto.getUserLikes().contains(userDto) && filmRepository.deleteUserLike(filmId, userId) > 0) {
-            log.info("удален лайк у фильма: " + filmOpt.get().getName());
-            filmDto.getUserLikes().remove(userDto);
+        if (filmDto.getUserLikes().contains(userDto)) {
+            if (filmRepository.deleteUserLike(filmId, userId) > 0) {
+                log.info("удален лайк у фильма: " + filmOpt.get().getName());
+                filmDto.getUserLikes().remove(userDto);
+            } else {
+                log.error("Ошибка удаления лайка: " + filmOpt.get().getName());
+                throw new InternalDataException("Ошибка удаления лайка");
+            }
+
         } else {
             throw new DataConflictException("Ошибка удаления лайка у фильма: этот пользователь еще не ставил лайк ");
         }
