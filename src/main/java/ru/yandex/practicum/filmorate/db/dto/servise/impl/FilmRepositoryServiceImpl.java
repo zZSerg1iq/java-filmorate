@@ -16,7 +16,9 @@ import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -70,8 +72,13 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
 
-        Set<GenreDto> genreDtos = new HashSet<>(filmDto.getGenres());
-        filmDto.setGenres(new ArrayList<>(genreDtos));
+        var temp = filmDto.getGenres();
+        filmDto.setGenres(new ArrayList<>());
+        for (GenreDto g : temp) {
+            if (!filmDto.getGenres().contains(g)) {
+                filmDto.getGenres().add(g);
+            }
+        }
 
         log.info("Данные фильма изменены: " + filmDto);
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
