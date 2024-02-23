@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -38,7 +39,7 @@ public class FilmDto {
 
     private MpaRateDto mpa;
 
-    private List<GenreDto> genres;
+    private Set<GenreDto> genres;
 
     private int rate;
 

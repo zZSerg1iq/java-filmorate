@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -69,6 +70,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         if (filmOpt.isEmpty()) {
             throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
+
 
         log.info("Данные фильма изменены: " + filmDto);
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
@@ -141,7 +143,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
     }
 
     @Override
-    public List<GenreDto> getGenresList() {
+    public Set<GenreDto> getGenresList() {
         return new FilmMapper().genresEntityListToDtoList(filmRepository.getGenres());
     }
 

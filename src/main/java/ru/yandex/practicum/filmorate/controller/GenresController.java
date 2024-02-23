@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 public class GenresController {
@@ -19,7 +19,7 @@ public class GenresController {
     }
 
     @GetMapping("/genres")
-    public ResponseEntity<List<GenreDto>> getGenreList() {
+    public ResponseEntity<Set<GenreDto>> getGenreList() {
         return ResponseEntity.ok(filmStorageService.getGenresList());
     }
 
