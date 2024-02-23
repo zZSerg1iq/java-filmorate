@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,13 +74,8 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         }
 
         if (filmDto.getGenres() != null && filmDto.getGenres().size() > 0) {
-            var temp = filmDto.getGenres();
-            filmDto.setGenres(new ArrayList<>());
-            for (GenreDto g : temp) {
-                if (!filmDto.getGenres().contains(g)) {
-                    filmDto.getGenres().add(g);
-                }
-            }
+            var temp = new HashSet<>(filmDto.getGenres());
+            filmDto.setGenres(new ArrayList<>(temp));
         }
 
         log.info("Данные фильма изменены: " + filmDto);
