@@ -74,10 +74,10 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
         filmRepository.updateFilm(new FilmMapper().filmDtoToEntity(filmDto));
 
         var result = filmRepository.getFilmById(filmDto.getId());
-        if (result.isPresent()){
+        if (result.isPresent()) {
             return new FilmMapper().filmEntityToDto(result.get());
         }
-        
+
         throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
     }
 
