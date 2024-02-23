@@ -68,7 +68,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
     public FilmDto updateFilm(FilmDto filmDto) {
         Optional<Film> filmOpt = filmRepository.getFilmById(filmDto.getId());
         if (filmOpt.isEmpty()) {
-            throw new InternalDataException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
+            throw new DataNotFoundException("Внутренняя ошибка: Ошибка обновления данных. Фильма с id " + filmDto.getId() + " не существует.");
         }
 
         log.info("Данные фильма изменены: " + filmDto);

@@ -32,7 +32,7 @@ public class FilmMapper {
                 .duration(filmDto.getDuration())
                 .description(filmDto.getDescription())
                 .releaseDate(filmDto.getReleaseDate())
-                .mpaRate(mpaRateDtoToEntity(filmDto.getMpa()))
+                .mpa(mpaRateDtoToEntity(filmDto.getMpa()))
                 .genres(genresDtoListToEntityList(filmDto.getGenres()))
                 .build();
     }
@@ -46,7 +46,7 @@ public class FilmMapper {
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
                 .genres(genresEntityListToDtoList(film.getGenres()))
-                .mpa(mpaRateEntityToDto(film.getMpaRate()))
+                .mpa(mpaRateEntityToDto(film.getMpa()))
                 .userLikes(userLikesEntityListToDtoList(film.getUserLikes()))
                 .build();
     }
@@ -56,7 +56,7 @@ public class FilmMapper {
         return MpaRate.builder()
                 .id(mpaRateDto.getId())
                 .rate(mpaRateDto.getRate())
-                .description(mpaRateDto.getDescription())
+    //           .description(mpaRateDto.getDescription())
                 .build();
     }
 
@@ -73,7 +73,7 @@ public class FilmMapper {
         return MpaRateDto.builder()
                 .id(mpaRate.getId())
                 .rate(mpaRate.getRate())
-                .description(mpaRate.getDescription())
+        //        .description(mpaRate.getDescription())
                 .build();
     }
 

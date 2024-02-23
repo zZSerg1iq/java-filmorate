@@ -115,7 +115,7 @@ public class H2FilmRepository implements FilmRepository {
         }, keyHolder);
         film.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
-        jdbcTemplate.update(createFilmMpaRate, film.getId(), film.getMpaRate().getId());
+        jdbcTemplate.update(createFilmMpaRate, film.getId(), film.getMpa().getId());
 
         List<Genre> genres = film.getGenres();
         for (Genre genre : genres) {
@@ -134,7 +134,7 @@ public class H2FilmRepository implements FilmRepository {
                 film.getDuration(),
                 film.getId());
 
-        jdbcTemplate.update(updateFilmMpaRate, film.getMpaRate().getId(), film.getId());
+        jdbcTemplate.update(updateFilmMpaRate, film.getMpa().getId(), film.getId());
 
         jdbcTemplate.update(deleteFilmGenres, film.getId());
 
@@ -252,7 +252,7 @@ public class H2FilmRepository implements FilmRepository {
                 .description(rowSet.getString("DESCRIPTION"))
                 .releaseDate(Objects.requireNonNull(rowSet.getDate("RELEASE_DATE")).toLocalDate())
                 .duration(rowSet.getInt("DURATION"))
-                .mpaRate(getFilmMPARate(id))
+                .mpa(getFilmMPARate(id))
                 .genres(getGenres(id))
                 .userLikes(getUserLikes(id))
                 .build();

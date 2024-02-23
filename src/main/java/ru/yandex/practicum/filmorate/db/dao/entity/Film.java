@@ -24,7 +24,7 @@ public class Film {
 
     private int duration;
 
-    private MpaRate mpaRate;
+    private MpaRate mpa;
 
     private List<Genre> genres;
 
@@ -35,11 +35,11 @@ public class Film {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Film film = (Film) o;
-        return duration == film.duration && Objects.equals(name, film.name) && Objects.equals(description, film.description) && Objects.equals(releaseDate, film.releaseDate) && Objects.equals(mpaRate, film.mpaRate);
+        return duration == film.duration && Objects.equals(name, film.name) && Objects.equals(description, film.description) && Objects.equals(releaseDate, film.releaseDate) && Objects.equals(mpa, film.mpa);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, releaseDate, duration, mpaRate);
+        return Objects.hash(name, description, releaseDate, duration, mpa);
     }
 }
