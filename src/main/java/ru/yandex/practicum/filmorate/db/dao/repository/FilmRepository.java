@@ -21,9 +21,9 @@ public interface FilmRepository {
 
     void deleteFilm(long id);
 
-    boolean addUserLike(long filmId, long userId);
+    int addUserLike(long filmId, long userId);
 
-    boolean deleteUserLike(long filmId, long userId);
+    int deleteUserLike(long filmId, long userId);
 
     List<Film> getTopRate(int count);
 

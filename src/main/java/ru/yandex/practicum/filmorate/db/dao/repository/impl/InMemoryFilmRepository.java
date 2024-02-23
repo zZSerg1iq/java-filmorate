@@ -70,19 +70,25 @@ public class InMemoryFilmRepository implements FilmRepository {
     }
 
     @Override
-    public boolean addUserLike(long filmId, long userId) {
+    public int addUserLike(long filmId, long userId) {
         if (userLikesTemp.get(userId) == null) {
             userLikesTemp.put(filmId, new HashSet<>());
         }
-        return userLikesTemp.get(filmId).add(userId);
+        if(userLikesTemp.get(filmId).add(userId)){
+            return 1;
+        }
+        return 0;
     }
 
     @Override
-    public boolean deleteUserLike(long filmId, long userId) {
+    public int deleteUserLike(long filmId, long userId) {
         if (userLikesTemp.get(userId) == null) {
-            return false;
+            return 0;
         }
-        return userLikesTemp.get(filmId).remove(userId);
+        if (userLikesTemp.get(filmId).remove(userId)){
+            return 1;
+        }
+        return 0;
     }
 
     @Override

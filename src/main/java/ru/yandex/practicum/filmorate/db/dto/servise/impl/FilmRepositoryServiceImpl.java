@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.db.dto.entity.UserDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 import ru.yandex.practicum.filmorate.db.mapping.FilmMapper;
-import ru.yandex.practicum.filmorate.db.mapping.UserMapper;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.exception.InternalDataException;
@@ -99,8 +98,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        if (!filmOpt.get().getUserLikes().contains(new UserMapper().dtoToEntity(userDto))) {
-            filmRepository.addUserLike(filmId, userId);
+        if (!filmDto.getUserLikes().contains(userDto) && filmRepository.addUserLike(filmId, userId) > 0) {
             log.info("Добавлен лайк к фильму: " + filmOpt.get().getName());
             filmDto.getUserLikes().add(userDto);
         } else {
@@ -122,8 +120,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
         FilmDto filmDto = new FilmMapper().filmEntityToDto(filmOpt.get());
 
-        if (filmOpt.get().getUserLikes().contains(new UserMapper().dtoToEntity(userDto))) {
-            filmRepository.deleteUserLike(filmId, userId);
+        if (filmDto.getUserLikes().contains(userDto) && filmRepository.deleteUserLike(filmId, userId) > 0) {
             log.info("удален лайк у фильма: " + filmOpt.get().getName());
             filmDto.getUserLikes().remove(userDto);
         } else {

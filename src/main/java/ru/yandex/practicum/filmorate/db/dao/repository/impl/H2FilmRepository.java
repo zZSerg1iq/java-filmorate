@@ -37,7 +37,7 @@ public class H2FilmRepository implements FilmRepository {
             "INSERT INTO films(_name, description, release_date, duration) " +
                     "VALUES (?, ?, ?, ?)";
     private final String getFilmList = "select * from films";
-    private final String updateFilmById = "UPDATE film SET _name = ?, description = ?, release_date = ?, duration = ?, genre = ?, mpa_rate = ? WHERE id = ?";
+    private final String updateFilmById = "UPDATE films SET _name = ?, description = ?, release_date = ?, duration = ? WHERE id = ?";
     private final String deleteFilmById = "delete from films where id = ?";
 
 
@@ -132,7 +132,6 @@ public class H2FilmRepository implements FilmRepository {
                 film.getDescription(),
                 java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),
-                film.getMpaRate(),
                 film.getId());
 
         jdbcTemplate.update(updateFilmMpaRate, film.getMpaRate().getId(), film.getId());
@@ -156,35 +155,13 @@ public class H2FilmRepository implements FilmRepository {
     }
 
     @Override
-    public boolean addUserLike(long filmId, long userId) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(addUserLike,
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, userId);
-            statement.setLong(2, filmId);
-            return statement;
-
-        }, keyHolder);
-
-        return keyHolder.getKey() != null;
+    public int addUserLike(long filmId, long userId) {
+        return jdbcTemplate.update(addUserLike, userId, filmId);
     }
 
     @Override
-    public boolean deleteUserLike(long filmId, long userId) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(deleteUserLike,
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, userId);
-            statement.setLong(2, filmId);
-            return statement;
-
-        }, keyHolder);
-
-        return keyHolder.getKey() != null;
+    public int deleteUserLike(long filmId, long userId) {
+        return jdbcTemplate.update(deleteUserLike, userId, filmId);
     }
 
     @Override
@@ -290,7 +267,7 @@ public class H2FilmRepository implements FilmRepository {
         return MpaRate
                 .builder()
                 .id(userRows.getLong("ID"))
-                .rate(userRows.getString("rate"))
+                .rate(userRows.getString("_rate"))
                 .description(userRows.getString("description"))
                 .build();
     }

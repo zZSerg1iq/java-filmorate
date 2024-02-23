@@ -102,20 +102,8 @@ public class H2UserRepository implements UserRepository {
     }
 
     @Override
-    public boolean deleteFriend(long userId, long friendId) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(deleteFriend,
-                    Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, userId);
-            statement.setLong(2, friendId);
-            statement.setLong(3, friendId);
-            statement.setLong(4, userId);
-            return statement;
-        }, keyHolder);
-
-        return keyHolder.getKey() != null;
+    public int deleteFriend(long userId, long friendId) {
+        return jdbcTemplate.update(deleteFriend, userId, friendId, friendId, userId);
     }
 
     @Override

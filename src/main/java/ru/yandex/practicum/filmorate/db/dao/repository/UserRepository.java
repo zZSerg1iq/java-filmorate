@@ -19,7 +19,7 @@ public interface UserRepository {
 
     void addFriend(long userId, long friendId);
 
-    boolean deleteFriend(long userId, long friendId);
+    int deleteFriend(long userId, long friendId);
 
     List<User> getFriendList(long userId);
 

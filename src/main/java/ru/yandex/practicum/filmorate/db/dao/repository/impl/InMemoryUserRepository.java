@@ -55,11 +55,12 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean deleteFriend(long userId, long friendId) {
+    public int deleteFriend(long userId, long friendId) {
         if (friendList.isEmpty() || !friendList.containsKey(userId)) {
-            return false;
+            return 0;
         }
-        return friendList.get(userId).remove(friendId);
+        friendList.get(userId).remove(friendId);
+        return 1;
     }
 
     @Override
