@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 import ru.yandex.practicum.filmorate.db.mapping.FilmMapper;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
-import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
 import java.util.List;
 import java.util.Optional;
