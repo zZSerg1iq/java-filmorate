@@ -74,7 +74,7 @@ public class InMemoryFilmRepository implements FilmRepository {
         if (userLikesTemp.get(userId) == null) {
             userLikesTemp.put(filmId, new HashSet<>());
         }
-        if(userLikesTemp.get(filmId).add(userId)){
+        if (userLikesTemp.get(filmId).add(userId)) {
             return 1;
         }
         return 0;
@@ -85,7 +85,7 @@ public class InMemoryFilmRepository implements FilmRepository {
         if (userLikesTemp.get(userId) == null) {
             return 0;
         }
-        if (userLikesTemp.get(filmId).remove(userId)){
+        if (userLikesTemp.get(filmId).remove(userId)) {
             return 1;
         }
         return 0;
@@ -96,12 +96,7 @@ public class InMemoryFilmRepository implements FilmRepository {
         userLikes.clear();
         userLikes.putAll(userLikesTemp);
 
-        return userLikes
-                .entrySet()
-                .stream()
-                .limit(count)
-                .map(longSetEntry -> filmDataStorage.get(longSetEntry.getKey()))
-                .collect(Collectors.toList());
+        return userLikes.entrySet().stream().limit(count).map(longSetEntry -> filmDataStorage.get(longSetEntry.getKey())).collect(Collectors.toList());
     }
 
     @Override
