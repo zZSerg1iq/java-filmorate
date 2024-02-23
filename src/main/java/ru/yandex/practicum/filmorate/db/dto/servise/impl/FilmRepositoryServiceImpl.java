@@ -23,12 +23,12 @@ import java.util.*;
 public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     private final FilmRepository filmRepository;
-    private final UserRepositoryService userStorageService;
+    private final UserRepositoryService userRepositoryService;
 
     @Autowired
-    public FilmRepositoryServiceImpl(FilmRepository filmRepository, UserRepositoryService userStorageService) {
+    public FilmRepositoryServiceImpl(FilmRepository filmRepository, UserRepositoryService userRepositoryService) {
         this.filmRepository = filmRepository;
-        this.userStorageService = userStorageService;
+        this.userRepositoryService = userRepositoryService;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public FilmDto addUserLike(long filmId, long userId) {
-        UserDto userDto = userStorageService.getUserById(userId);
+        UserDto userDto = userRepositoryService.getUserById(userId);
 
         Optional<Film> filmOpt = filmRepository.getFilmById(filmId);
         if (filmOpt.isEmpty()) {
@@ -122,9 +122,9 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public FilmDto deleteUserLike(long filmId, long userId) {
-        UserDto userDto = userStorageService.getUserById(userId);
-
+        UserDto userDto = userRepositoryService.getUserById(userId);
         Optional<Film> filmOpt = filmRepository.getFilmById(filmId);
+
         if (filmOpt.isEmpty()) {
             throw new DataNotFoundException("Ошибка удаления лайка у фильма: фильм " + filmId + " не найден");
         }
