@@ -65,7 +65,7 @@ public class H2FilmRepository implements FilmRepository {
 
 
     private final String getFilmGenres =
-            "select g._name from film_genres fg" +
+            "select g.id, g._name from film_genres fg" +
                     " inner join genres g on g.id = fg.genre_id " +
                     " where film_id = ?";
     private final String deleteFilmGenres = "DELETE FROM film_genres WHERE film_id = ?";
@@ -198,7 +198,7 @@ public class H2FilmRepository implements FilmRepository {
                     .name(sqlRowSet.getString("_NAME"))
                     .build();
         }
-        return new Genre();
+        return null;
     }
 
     @Override
@@ -219,7 +219,7 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public MpaRate getMpaRateById(long id) {
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(selectMpaById);
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(selectMpaById, id);
 
         if (sqlRowSet.next()) {
             return MpaRate.builder()
@@ -229,7 +229,7 @@ public class H2FilmRepository implements FilmRepository {
                     .build();
         }
 
-        return new MpaRate();
+        return null;
     }
 
     private List<Film> getFilmListFromRowSet(SqlRowSet rowSet) {
@@ -274,9 +274,11 @@ public class H2FilmRepository implements FilmRepository {
 
     private List<Genre> getGenres(long filmId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(getFilmGenres, filmId);
+        showQueryInfo(userRows);
 
         List<Genre> userList = new ArrayList<>();
         while (userRows.next()) {
+
             userList.add(
                     Genre.builder()
                             .id(userRows.getLong("ID"))

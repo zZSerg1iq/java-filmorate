@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.db.dto.entity.FilmDto;
-import ru.yandex.practicum.filmorate.db.dto.entity.GenreDto;
-import ru.yandex.practicum.filmorate.db.dto.entity.MpaRateDto;
 import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 
 import javax.validation.Valid;
@@ -69,26 +67,6 @@ public class FilmController {
     public ResponseEntity<FilmDto> deleteUserLike(@PathVariable("id") long filmId, @PathVariable long userId) {
 
         return ResponseEntity.ok(filmStorageService.deleteUserLike(filmId, userId));
-    }
-
-    @GetMapping("/genres")
-    public ResponseEntity<List<GenreDto>> getGenreList() {
-        return ResponseEntity.ok(filmStorageService.getGenresList());
-    }
-
-    @GetMapping("/genres/{id}")
-    public ResponseEntity<GenreDto> getGenreById(@PathVariable("id") int id) {
-        return ResponseEntity.ok(filmStorageService.getGenreById(id));
-    }
-
-    @GetMapping("/mpa")
-    public ResponseEntity<List<MpaRateDto>> getMpaList() {
-        return ResponseEntity.ok(filmStorageService.getMpaList());
-    }
-
-    @GetMapping("/mpa/{id}")
-    public ResponseEntity<MpaRateDto> getMpaById(@PathVariable("id") int id) {
-        return ResponseEntity.ok(filmStorageService.getMpaById(id));
     }
 
 }

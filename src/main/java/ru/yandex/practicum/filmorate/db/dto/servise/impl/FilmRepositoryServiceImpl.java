@@ -142,7 +142,11 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public GenreDto getGenreById(long id) {
-        return new FilmMapper().genreEntityToDto(filmRepository.getGenreById(id));
+        var genre = filmRepository.getGenreById(id);
+        if (genre == null) {
+            throw new DataNotFoundException("Жанр не существует");
+        }
+        return new FilmMapper().genreEntityToDto(genre);
     }
 
     @Override
@@ -152,6 +156,10 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
 
     @Override
     public MpaRateDto getMpaById(long id) {
-        return new FilmMapper().mpaRateEntityToDto(filmRepository.getMpaRateById(id));
+        var mpa = filmRepository.getMpaRateById(id);
+        if (mpa == null) {
+            throw new DataNotFoundException("Рейтинг не найден");
+        }
+        return new FilmMapper().mpaRateEntityToDto(mpa);
     }
 }
