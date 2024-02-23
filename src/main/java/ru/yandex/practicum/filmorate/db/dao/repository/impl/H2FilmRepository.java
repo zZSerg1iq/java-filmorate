@@ -260,6 +260,7 @@ public class H2FilmRepository implements FilmRepository {
 
     private MpaRate getFilmMPARate(long filmId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(getMpaRate, filmId);
+
         if (!userRows.next()) {
             return new MpaRate();
         }
@@ -274,7 +275,6 @@ public class H2FilmRepository implements FilmRepository {
 
     private List<Genre> getGenres(long filmId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(getFilmGenres, filmId);
-        showQueryInfo(userRows);
 
         List<Genre> userList = new ArrayList<>();
         while (userRows.next()) {
