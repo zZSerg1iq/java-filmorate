@@ -210,13 +210,19 @@ class FilmRepositoryServiceTest extends TestBasic {
         topBasic.add(filmList.get(randomId2));
         topBasic.add(filmList.get(randomId3));
 
-        addRandomUserLikes(topBasic.get(0), userList);
-        addRandomUserLikes(topBasic.get(1), userList);
-        addRandomUserLikes(topBasic.get(2), userList);
-        topBasic.sort(Comparator.comparingInt(o -> o.getUserLikes().size()));
-        Collections.reverse(topBasic);
+        prepareList(topBasic, userList);
 
         List<FilmDto> topRate = filmService.getTopRate(5);
+
+        /*System.out.println("===================");
+        for (FilmDto f: topBasic) {
+            System.out.println("id: "+f.getId()+", "+f.getUserLikes().size());
+        }
+        System.out.println("===================");
+        for (FilmDto f: topRate) {
+            System.out.println("id: "+f.getId()+", "+f.getUserLikes().size());
+        }
+        System.out.println("===================");*/
 
         assertAll(
                 () -> assertNotNull(topRate),
@@ -224,6 +230,31 @@ class FilmRepositoryServiceTest extends TestBasic {
                 () -> assertEquals(topBasic.get(1).getId(), topRate.get(1).getId()),
                 () -> assertEquals(topBasic.get(2).getId(), topRate.get(2).getId())
         );
+    }
+
+    private void prepareList(List<FilmDto> topBasic, List<UserDto> userList) {
+        addRandomUserLikes(topBasic.get(0), userList);
+        addRandomUserLikes(topBasic.get(1), userList);
+        addRandomUserLikes(topBasic.get(2), userList);
+
+        while (true) {
+            int count1 = topBasic.get(0).getUserLikes().size();
+            int count2 = topBasic.get(1).getUserLikes().size();
+            int count3 = topBasic.get(2).getUserLikes().size();
+
+            if (count1 == count2 || count1 == count3) {
+                addRandomUserLikes(topBasic.get(0), userList);
+                continue;
+            }
+            if (count2 == count3) {
+                addRandomUserLikes(topBasic.get(1), userList);
+                continue;
+            }
+            break;
+        }
+
+        topBasic.sort(Comparator.comparingInt(o -> o.getUserLikes().size()));
+        Collections.reverse(topBasic);
     }
 
     @Test
@@ -294,7 +325,9 @@ class FilmRepositoryServiceTest extends TestBasic {
         for (UserDto user : userList) {
             int yesOrNot = random.nextInt(100);
             if (yesOrNot <= 50) {
-                filmService.addUserLike(filmDto.getId(), user.getId());
+                try {
+                    filmService.addUserLike(filmDto.getId(), user.getId());
+                } catch (Exception e) {}
                 filmDto.getUserLikes().add(user);
             }
         }
