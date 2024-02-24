@@ -44,8 +44,8 @@ class FilmRepositoryServiceTest extends TestBasic {
         int randomId = random.nextInt(4) + 1;
         var filmById = filmService.getFilmById(randomId);
 
-        Throwable fakeId_1 = assertThrows(RuntimeException.class, () -> filmService.getFilmById(-1));
-        Throwable fakeId_2 = assertThrows(RuntimeException.class, () -> filmService.getFilmById(9999999));
+        Throwable fakeId1 = assertThrows(RuntimeException.class, () -> filmService.getFilmById(-1));
+        Throwable fakeId2 = assertThrows(RuntimeException.class, () -> filmService.getFilmById(9999999));
 
         assertAll(
                 () -> assertNotNull(filmDBList),
@@ -55,8 +55,8 @@ class FilmRepositoryServiceTest extends TestBasic {
                 () -> assertEquals(filmDtoList.get(2).getName(), filmDBList.get(2).getName()),
                 () -> assertEquals(filmDtoList.get(3).getName(), filmDBList.get(3).getName()),
                 () -> assertEquals(filmDtoList.get(4).getName(), filmDBList.get(4).getName()),
-                () -> assertEquals("Фильм с id -1 не найден", fakeId_1.getMessage()),
-                () -> assertEquals("Фильм с id 9999999 не найден", fakeId_2.getMessage()),
+                () -> assertEquals("Фильм с id -1 не найден", fakeId1.getMessage()),
+                () -> assertEquals("Фильм с id 9999999 не найден", fakeId2.getMessage()),
                 () -> assertEquals(filmById, filmDBList.get(randomId - 1))
         );
     }
@@ -79,15 +79,15 @@ class FilmRepositoryServiceTest extends TestBasic {
         FilmDto noIdFilm = getRandomFilmDto();
         FilmDto notExistedIdFilm = getRandomFilmDto();
         notExistedIdFilm.setId(9999999);
-        Throwable nonExistentId_1 = assertThrows(RuntimeException.class, () -> filmService.updateFilm(noIdFilm));
-        Throwable nonExistentId_2 = assertThrows(RuntimeException.class, () -> filmService.updateFilm(notExistedIdFilm));
+        Throwable nonExistentId1 = assertThrows(RuntimeException.class, () -> filmService.updateFilm(noIdFilm));
+        Throwable nonExistentId2 = assertThrows(RuntimeException.class, () -> filmService.updateFilm(notExistedIdFilm));
 
         assertAll(
                 () -> assertNotNull(updatedFilm),
                 () -> assertEquals(filmWithId, updatedFilm),
                 () -> assertEquals(new ArrayList<>(genresWithoutCopies), updatedFilm.getGenres()),
-                () -> assertEquals("Внутренняя ошибка: Ошибка обновления данных. Фильма с id 0 не существует.", nonExistentId_1.getMessage()),
-                () -> assertEquals("Внутренняя ошибка: Ошибка обновления данных. Фильма с id 9999999 не существует.", nonExistentId_2.getMessage())
+                () -> assertEquals("Внутренняя ошибка: Ошибка обновления данных. Фильма с id 0 не существует.", nonExistentId1.getMessage()),
+                () -> assertEquals("Внутренняя ошибка: Ошибка обновления данных. Фильма с id 9999999 не существует.", nonExistentId2.getMessage())
         );
     }
 
@@ -101,8 +101,8 @@ class FilmRepositoryServiceTest extends TestBasic {
         filmService.deleteFilm(filmFromBd.getId());
         var filmListAfterDeleteFilm = filmService.getFilmList();
 
-        Throwable fakeId_1 = assertThrows(RuntimeException.class, () -> filmService.deleteFilm(-1));
-        Throwable fakeId_2 = assertThrows(RuntimeException.class, () -> filmService.deleteFilm(99999));
+        Throwable fakeId1 = assertThrows(RuntimeException.class, () -> filmService.deleteFilm(-1));
+        Throwable fakeid2 = assertThrows(RuntimeException.class, () -> filmService.deleteFilm(99999));
 
         assertAll(
                 () -> assertNotNull(filmFromBd),
@@ -110,8 +110,8 @@ class FilmRepositoryServiceTest extends TestBasic {
                 () -> assertEquals(filmWithId, filmFromBd),
                 () -> assertTrue(filmListBeforeDeleteFilm.contains(filmFromBd)),
                 () -> assertFalse(filmListAfterDeleteFilm.contains(filmFromBd)),
-                () -> assertEquals("Ошибка удаления фильма: фильм -1 не найден", fakeId_1.getMessage()),
-                () -> assertEquals("Ошибка удаления фильма: фильм 99999 не найден", fakeId_2.getMessage())
+                () -> assertEquals("Ошибка удаления фильма: фильм -1 не найден", fakeId1.getMessage()),
+                () -> assertEquals("Ошибка удаления фильма: фильм 99999 не найден", fakeid2.getMessage())
         );
     }
 
@@ -144,15 +144,15 @@ class FilmRepositoryServiceTest extends TestBasic {
 
         var emptyUserLikes = filmService.getFilmById(filmId).getUserLikes();
 
-        Throwable addFakeUserLike_1 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(filmId, -1));
-        Throwable addFakeUserLike_2 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(filmId, 99999));
-        Throwable deleteFakeUserLike_1 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(filmId, -1));
-        Throwable deleteFakeUserLike_2 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(filmId, 99999));
+        Throwable addFakeUserLike1 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(filmId, -1));
+        Throwable addfakeuserlike2 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(filmId, 99999));
+        Throwable deletefakeuserlike1 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(filmId, -1));
+        Throwable deletefakeuserlike2 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(filmId, 99999));
 
-        Throwable addFakeFilmLike_1 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(-1, someRandomUsers.get(1).getId()));
-        Throwable addFakeFilmLike_2 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(9999, someRandomUsers.get(2).getId()));
-        Throwable deleteFakeFilmLike_1 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(-1, someRandomUsers.get(1).getId()));
-        Throwable deleteFakeFilmLike_2 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(99999, someRandomUsers.get(2).getId()));
+        Throwable addfakefilmlike1 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(-1, someRandomUsers.get(1).getId()));
+        Throwable addfakefilmlike2 = assertThrows(RuntimeException.class, () -> filmService.addUserLike(9999, someRandomUsers.get(2).getId()));
+        Throwable deletefakefilmlike1 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(-1, someRandomUsers.get(1).getId()));
+        Throwable deletefakefilmlike2 = assertThrows(RuntimeException.class, () -> filmService.deleteUserLike(99999, someRandomUsers.get(2).getId()));
 
         assertAll(
                 () -> assertNotNull(userLikes),
@@ -177,15 +177,15 @@ class FilmRepositoryServiceTest extends TestBasic {
 
                 () -> assertEquals("Ошибка добавления лайка фильму: этот пользователь уже ставил лайк ", addDoubleLikeFromUser.getMessage()),
 
-                () -> assertEquals("Пользователя с id -1 не существует", addFakeUserLike_1.getMessage()),
-                () -> assertEquals("Пользователя с id 99999 не существует", addFakeUserLike_2.getMessage()),
-                () -> assertEquals("Пользователя с id -1 не существует", deleteFakeUserLike_1.getMessage()),
-                () -> assertEquals("Пользователя с id 99999 не существует", deleteFakeUserLike_2.getMessage()),
+                () -> assertEquals("Пользователя с id -1 не существует", addFakeUserLike1.getMessage()),
+                () -> assertEquals("Пользователя с id 99999 не существует", addfakeuserlike2.getMessage()),
+                () -> assertEquals("Пользователя с id -1 не существует", deletefakeuserlike1.getMessage()),
+                () -> assertEquals("Пользователя с id 99999 не существует", deletefakeuserlike2.getMessage()),
 
-                () -> assertEquals("Ошибка добавления лайка фильму: фильм -1 не найден", addFakeFilmLike_1.getMessage()),
-                () -> assertEquals("Ошибка добавления лайка фильму: фильм 9999 не найден", addFakeFilmLike_2.getMessage()),
-                () -> assertEquals("Ошибка удаления лайка у фильма: фильм -1 не найден", deleteFakeFilmLike_1.getMessage()),
-                () -> assertEquals("Ошибка удаления лайка у фильма: фильм 99999 не найден", deleteFakeFilmLike_2.getMessage())
+                () -> assertEquals("Ошибка добавления лайка фильму: фильм -1 не найден", addfakefilmlike1.getMessage()),
+                () -> assertEquals("Ошибка добавления лайка фильму: фильм 9999 не найден", addfakefilmlike2.getMessage()),
+                () -> assertEquals("Ошибка удаления лайка у фильма: фильм -1 не найден", deletefakefilmlike1.getMessage()),
+                () -> assertEquals("Ошибка удаления лайка у фильма: фильм 99999 не найден", deletefakefilmlike2.getMessage())
         );
     }
 
@@ -247,15 +247,15 @@ class FilmRepositoryServiceTest extends TestBasic {
         int genreId = random.nextInt(5);
         String genreName = filmGenres.get(genreId);
 
-        Throwable fakeId_1 = assertThrows(RuntimeException.class, () -> filmService.getGenreById(-1));
-        Throwable fakeId_2 = assertThrows(RuntimeException.class, () -> filmService.getGenreById(9999999));
+        Throwable fakeid1 = assertThrows(RuntimeException.class, () -> filmService.getGenreById(-1));
+        Throwable fakeid2 = assertThrows(RuntimeException.class, () -> filmService.getGenreById(9999999));
 
         var mpaDto = filmService.getGenreById(genreId + 1);
         assertAll(
                 () -> assertNotNull(mpaDto),
                 () -> assertEquals(genreName, mpaDto.getName()),
-                () -> assertEquals("Жанр не существует", fakeId_1.getMessage()),
-                () -> assertEquals("Жанр не существует", fakeId_2.getMessage())
+                () -> assertEquals("Жанр не существует", fakeid1.getMessage()),
+                () -> assertEquals("Жанр не существует", fakeid2.getMessage())
         );
     }
 
@@ -279,14 +279,14 @@ class FilmRepositoryServiceTest extends TestBasic {
         String mpaRank = mpaRating.get(randMpa);
         var mpaDto = filmService.getMpaById(randMpa + 1);
 
-        Throwable fakeId_1 = assertThrows(RuntimeException.class, () -> filmService.getMpaById(-1));
-        Throwable fakeId_2 = assertThrows(RuntimeException.class, () -> filmService.getMpaById(9999999));
+        Throwable fakeid1 = assertThrows(RuntimeException.class, () -> filmService.getMpaById(-1));
+        Throwable fakeid2 = assertThrows(RuntimeException.class, () -> filmService.getMpaById(9999999));
 
         assertAll(
                 () -> assertNotNull(mpaDto),
                 () -> assertEquals(mpaRank, mpaDto.getName()),
-                () -> assertEquals("Рейтинг не найден", fakeId_1.getMessage()),
-                () -> assertEquals("Рейтинг не найден", fakeId_2.getMessage())
+                () -> assertEquals("Рейтинг не найден", fakeid1.getMessage()),
+                () -> assertEquals("Рейтинг не найден", fakeid2.getMessage())
         );
     }
 

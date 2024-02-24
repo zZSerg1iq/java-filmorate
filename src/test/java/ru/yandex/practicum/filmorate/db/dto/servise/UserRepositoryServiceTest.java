@@ -17,14 +17,14 @@ class UserRepositoryServiceTest extends TestBasic {
 
         UserDto userFromDB = userService.getUserById(userDto.getId());
 
-        Throwable getFakeId_1 = assertThrows(RuntimeException.class, () -> userService.getUserById(-1));
-        Throwable getFakeId_2 = assertThrows(RuntimeException.class, () -> userService.getUserById(9999));
+        Throwable getfakeid1 = assertThrows(RuntimeException.class, () -> userService.getUserById(-1));
+        Throwable getfakeid2 = assertThrows(RuntimeException.class, () -> userService.getUserById(9999));
 
         assertAll(
                 () -> assertNotNull(userFromDB),
                 () -> assertEquals(userDto, userFromDB),
-                () -> assertEquals("Пользователя с id -1 не существует", getFakeId_1.getMessage()),
-                () -> assertEquals("Пользователя с id 9999 не существует", getFakeId_2.getMessage())
+                () -> assertEquals("Пользователя с id -1 не существует", getfakeid1.getMessage()),
+                () -> assertEquals("Пользователя с id 9999 не существует", getfakeid2.getMessage())
         );
     }
 
