@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.db.dto.servise.FilmRepositoryService;
 import ru.yandex.practicum.filmorate.db.dto.servise.UserRepositoryService;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public abstract class TestBasic {
                     "DROP TABLE IF EXISTS film_mpa_rate cascade ;";
 
 
-    protected final String CREATE_ALL_TABLES_QUERY = "" +
+    protected final String createAllTablesQuery = "" +
             "CREATE TABLE IF NOT EXISTS _users (" +
             "id INT AUTO_INCREMENT PRIMARY KEY," +
             "_name VARCHAR(50) NOT NULL," +
@@ -100,7 +99,7 @@ public abstract class TestBasic {
             "FOREIGN KEY (rate_id) REFERENCES mpa_rate(id)" +
             ");";
 
-    protected final String insert_started_data = "" +
+    protected final String insertStartedData = "" +
             "INSERT INTO genres (_name) values " +
             "('Комедия'), ('Драма'), ('Мультфильм'), ('Триллер'), ('Документальный'), ('Боевик'); " +
             "" +
@@ -127,8 +126,8 @@ public abstract class TestBasic {
     @BeforeEach
     public void setUp() {
         jdbcTemplate.update(dropAllQuery);
-        jdbcTemplate.update(CREATE_ALL_TABLES_QUERY);
-        jdbcTemplate.update(insert_started_data);
+        jdbcTemplate.update(createAllTablesQuery);
+        jdbcTemplate.update(insertStartedData);
 
         Assertions.assertAll(
                 () -> assertEquals(0, filmService.getFilmList().size()),
@@ -189,11 +188,6 @@ public abstract class TestBasic {
     public String getRandomEmail() {
         String uuid = UUID.randomUUID().toString(); // Генерация случайного UUID
         return "userMail" + uuid.substring(0, 8) + "@example.com"; // Собираем e-mail из UUID
-    }
-
-    private LocalDate getDateFromString(String dateStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(dateStr, formatter);
     }
 
 }
