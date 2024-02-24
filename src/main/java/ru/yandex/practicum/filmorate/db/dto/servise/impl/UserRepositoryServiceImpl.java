@@ -135,7 +135,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
             throw new DataNotFoundException("Ошибка удаления пользователя с id " + friendId + " из списка друзей. Пользователя нет с списке друзей");
         }
 
-        if (friend.getFriendRequestList().contains(user)){
+        if (friend.getFriendRequestList().contains(user)) {
             userRepository.deleteFriendRequests(userId, friendId);
         }
 
