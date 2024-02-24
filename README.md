@@ -5,5 +5,5 @@ Template repository for Filmorate project.
 
 - SpringBoot
 - Controller
-- отношение база данных (in memory пока что) - service
+- h2 db  ![схема базы данных](https://github.com/zZSerg1iq/java-filmorate/blob/main/DB.png)
 - jUnit
