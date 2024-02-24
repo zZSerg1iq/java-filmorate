@@ -327,7 +327,9 @@ class FilmRepositoryServiceTest extends TestBasic {
             if (yesOrNot <= 50) {
                 try {
                     filmService.addUserLike(filmDto.getId(), user.getId());
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    //
+                }
                 filmDto.getUserLikes().add(user);
             }
         }
