@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FilmRepositoryService {
 
-    FilmDto getFilm(long filmId);
+    FilmDto getFilmById(long filmId);
 
     List<FilmDto> getFilmList();
 

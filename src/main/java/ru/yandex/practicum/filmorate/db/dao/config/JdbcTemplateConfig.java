@@ -14,4 +14,6 @@ public class JdbcTemplateConfig {
     public JdbcTemplate jdbcTemplate(@Autowired DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
+
+
 }

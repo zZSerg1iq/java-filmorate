@@ -102,7 +102,13 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (user.getFriendLists().contains(friend)) {
             throw new DataConflictException("Конфликт добавления в друзья пользователя с id " + friendId + ". Пользователь уже находится в списке друзей");
         }
-        userRepository.addFriend(userId, friendId);
+
+        // если это принятие предлагаемой дружбы
+        if (user.getFriendRequestList().contains(friend)) {
+            userRepository.confirmFriendRequest(userId, friendId);
+        } else { // если это предложение дружбы
+            userRepository.addFriend(userId, friendId);
+        }
 
         log.warn("Новые друзья: " + user.getLogin() + " & " + friend.getLogin());
 
@@ -125,9 +131,14 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         User user = userOpt.get();
         User friend = friendOpt.get();
 
-        if (userRepository.deleteFriend(userId, friendId) == 0) {
+        if (userRepository.deleteFriendFromUser(userId, friendId) == 0) {
             throw new DataNotFoundException("Ошибка удаления пользователя с id " + friendId + " из списка друзей. Пользователя нет с списке друзей");
         }
+
+        if (friend.getFriendRequestList().contains(user)){
+            userRepository.deleteFriendRequests(userId, friendId);
+        }
+
 
         log.warn("Прекращены дружба: " + user.getLogin() + " & " + friend.getLogin());
         user.getFriendLists().remove(friend);

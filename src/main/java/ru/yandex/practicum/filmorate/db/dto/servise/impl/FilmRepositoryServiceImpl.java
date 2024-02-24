@@ -35,7 +35,7 @@ public class FilmRepositoryServiceImpl implements FilmRepositoryService {
     }
 
     @Override
-    public FilmDto getFilm(long filmId) {
+    public FilmDto getFilmById(long filmId) {
         Optional<Film> filmOpt = filmRepository.getFilmById(filmId);
         if (filmOpt.isEmpty()) {
             throw new DataNotFoundException("Фильм с id " + filmId + " не найден");

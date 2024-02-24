@@ -149,9 +149,10 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public void deleteFilm(long id) {
+        jdbcTemplate.update(deleteFilmGenres, id);
         jdbcTemplate.update(deleteFilmUserLikes, id);
-        jdbcTemplate.update(deleteFilmById, id);
         jdbcTemplate.update(deleteFilmMpaRate, id);
+        jdbcTemplate.update(deleteFilmById, id);
     }
 
     @Override

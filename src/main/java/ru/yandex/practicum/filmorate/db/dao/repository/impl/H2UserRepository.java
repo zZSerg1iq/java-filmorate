@@ -39,7 +39,10 @@ public class H2UserRepository implements UserRepository {
     private final String deleteUserById = "delete from _users where id = ?";
     private final String deleteUserFriends = "delete from friend_list where user_id = ? or friend_id = ?";
     private final String addUserFriend = "insert into friend_list(user_id, friend_id, friend_request_status) values(?, ?, ?)";
-    private final String deleteFriend = "delete from friend_list where user_id = ? and friend_id = ? or user_id = ? and friend_id = ?";
+    private final String updateFriendRequestStatus = "UPDATE friend_list set friend_request_status = ? where user_id = ? and friend_id = ?";
+    private final String deleteFriendFromUser = "update friend_list set friend_request_status = ? where user_id = ? and friend_id = ?";
+
+    private final String deleteFriendRequests = "delete from friend_list where user_id = ? and friend_id = ? or user_id = ? and friend_id = ?";
 
     @Override
     public Optional<User> getUserById(long userId) {
@@ -91,7 +94,7 @@ public class H2UserRepository implements UserRepository {
 
     @Override
     public void deleteUser(long userId) {
-        jdbcTemplate.update(deleteUserFriends, userId);
+        jdbcTemplate.update(deleteUserFriends, userId, userId);
         jdbcTemplate.update(deleteUserById, userId);
     }
 
@@ -102,8 +105,18 @@ public class H2UserRepository implements UserRepository {
     }
 
     @Override
-    public int deleteFriend(long userId, long friendId) {
-        return jdbcTemplate.update(deleteFriend, userId, friendId, friendId, userId);
+    public void confirmFriendRequest(long userId, long friendId) {
+        jdbcTemplate.update(updateFriendRequestStatus, "CONFIRMED", userId, friendId);
+    }
+
+    @Override
+    public int deleteFriendFromUser(long userId, long friendId) {
+        return jdbcTemplate.update(deleteFriendFromUser, "UNCONFIRMED", userId, friendId);
+    }
+
+    @Override
+    public int deleteFriendRequests(long userId, long friendId) {
+        return jdbcTemplate.update(deleteFriendRequests, userId, friendId, friendId, userId);
     }
 
     @Override
