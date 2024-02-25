@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.db.dao.entity.Film;
 import ru.yandex.practicum.filmorate.db.dao.entity.Genre;
 import ru.yandex.practicum.filmorate.db.dao.entity.MpaRate;
@@ -18,7 +18,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Repository
 public class H2FilmRepository implements FilmRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -69,7 +69,6 @@ public class H2FilmRepository implements FilmRepository {
                     " inner join genres g on g.id = fg.genre_id " +
                     " where film_id = ?";
     private final String deleteFilmGenres = "DELETE FROM film_genres WHERE film_id = ?";
-    private final String createFilmGenres = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
     private final String selectAllGenres = "select * from genres";
     private final String selectGenreById = "select * from genres where id = ?";
 
@@ -117,10 +116,7 @@ public class H2FilmRepository implements FilmRepository {
 
         jdbcTemplate.update(createFilmMpaRate, film.getId(), film.getMpa().getId());
 
-        List<Genre> genres = film.getGenres();
-        for (Genre genre : genres) {
-            jdbcTemplate.update(createFilmGenres, film.getId(), genre.getId());
-        }
+        batchUpdateFilmGenres(film);
 
         return film;
     }
@@ -138,13 +134,22 @@ public class H2FilmRepository implements FilmRepository {
 
         jdbcTemplate.update(deleteFilmGenres, film.getId());
 
-        // Добавляем новые связи жанров с фильмом
-        List<Genre> genres = film.getGenres();
-        for (Genre genre : genres) {
-            jdbcTemplate.update(createFilmGenres, film.getId(), genre.getId());
-        }
+        batchUpdateFilmGenres(film);
 
         return film;
+    }
+
+    private void batchUpdateFilmGenres(Film film) {
+        List<Genre> genres = film.getGenres();
+        String[] queries = new String[genres.size()];
+        long filmId = film.getId();
+
+        for (int i = 0; i < queries.length; i++) {
+            Genre genre = genres.get(i);
+            queries[i] = "INSERT INTO film_genres (film_id, genre_id) VALUES (" + filmId + ", " + genre.getId() + ")";
+        }
+
+        jdbcTemplate.batchUpdate(queries);
     }
 
     @Override

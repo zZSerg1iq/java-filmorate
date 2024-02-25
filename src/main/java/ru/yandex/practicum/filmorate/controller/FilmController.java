@@ -46,15 +46,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<FilmDto>> getTopRateList(@RequestParam(value = "count", required = false) String count) {
-        final int defaultValue = 10;
-
-        if (count != null && !count.isBlank()) {
-            int filmCount = Integer.parseInt(count);
-            return ResponseEntity.ok(filmStorageService.getTopRate(filmCount));
-        } else {
-            return ResponseEntity.ok(filmStorageService.getTopRate(defaultValue));
-        }
+    public ResponseEntity<List<FilmDto>> getTopRateList(@RequestParam(value = "count", defaultValue = "10") String count) {
+        int filmCount = Integer.parseInt(count);
+        return ResponseEntity.ok(filmStorageService.getTopRate(filmCount));
     }
 
     @PutMapping("/{id}/like/{userId}")
