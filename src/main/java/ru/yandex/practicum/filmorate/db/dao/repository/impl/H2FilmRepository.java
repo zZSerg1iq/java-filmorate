@@ -94,7 +94,9 @@ public class H2FilmRepository implements FilmRepository {
 
     @Override
     public List<Film> getFilmList() {
+        System.out.println("2");
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(getFilmList);
+        System.out.println("3");
         return getFilmListFromRowSet(rowSet);
     }
 
@@ -135,20 +137,21 @@ public class H2FilmRepository implements FilmRepository {
         jdbcTemplate.update(deleteFilmGenres, film.getId());
 
         batchUpdateFilmGenres(film);
-
         return film;
     }
 
     private void batchUpdateFilmGenres(Film film) {
         List<Genre> genres = film.getGenres();
+        if (genres.size() == 0){
+            return;
+        }
+
         String[] queries = new String[genres.size()];
         long filmId = film.getId();
-
         for (int i = 0; i < queries.length; i++) {
             Genre genre = genres.get(i);
             queries[i] = "INSERT INTO film_genres (film_id, genre_id) VALUES (" + filmId + ", " + genre.getId() + ")";
         }
-
         jdbcTemplate.batchUpdate(queries);
     }
 
@@ -240,12 +243,10 @@ public class H2FilmRepository implements FilmRepository {
 
     private List<Film> getFilmListFromRowSet(SqlRowSet rowSet) {
         //showQueryInfo(rowSet);
-
         List<Film> filmList = new ArrayList<>();
         while (rowSet.next()) {
             filmList.add(getFilmFromRow(rowSet));
         }
-
         return filmList;
     }
 
