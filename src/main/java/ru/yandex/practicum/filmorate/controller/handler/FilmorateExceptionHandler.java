@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.controller.GenresController;
+import ru.yandex.practicum.filmorate.controller.MPAController;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.DataConflictException;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
@@ -14,7 +16,7 @@ import ru.yandex.practicum.filmorate.exception.InternalDataException;
 
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = {FilmController.class, UserController.class})
+@RestControllerAdvice(assignableTypes = {FilmController.class, UserController.class, GenresController.class, MPAController.class})
 @Slf4j
 public class FilmorateExceptionHandler {
 
